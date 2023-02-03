@@ -10,8 +10,9 @@ body {
 }
 
 #title {
-    font-size: 76px;
-    margin: 0px
+    font-size: 57px;
+    margin: 0px;
+    text-align: center;
 }
 
 p {
