@@ -41,7 +41,7 @@ def login():
                 return render_template("login.html", error="Invalid username or password")
             session = db.start_session(username)
 
-            response = make_response(redirect('/'))
+            response = make_response(redirect('wallet'))
             response.set_cookie('session', session.token, expires=session.expires)
             return response
 
@@ -49,7 +49,7 @@ def login():
 def logout():
     user = authentication_check(request)
     db.end_session(user.username)
-    return redirect("/")
+    return redirect("wallet")
 
 @app.route("/transaction", methods=["POST"])
 def transaction():
