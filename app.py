@@ -12,7 +12,7 @@ app = Flask(__name__)
 def wallet():
     user = authentication_check(request)
     if not user:
-        return redirect(url_for("login"))
+        return redirect("login")
     return render_template(
         "wallet.html", 
         user=user
