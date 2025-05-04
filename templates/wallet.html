@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+    <meta name="format-detection" content="telephone=no">
+</head>
+
+<body>
+    <!-- Banner -->
+    <section>
+        <a href="/">
+            <h1>Lute Bear Coin</h1>
+            <img class="logo" src="/static/logo.png">
+        </a>
+    </section>
+
+    <section>
+        <div class="credit-card">
+            <p class="card-title">LBC</p>
+            <p class="card-text">{{ user.id | format_account_number }}</p>
+            <p class="card-subtext">{{ user.nickname }} {{ user.created_at | format_credit_date }}</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="grid-container">
+            <a href="/send_lbc" class="grid-item">
+                <button>Send LBC</button>
+            </a>
+            <a href="/send_nft" class="grid-item">
+                <button>Send NFT</button>
+            </a>
+        </div>
+    </section>
+
+    <section>
+        <div class="card">
+            <h2>Balance</h2>
+            <h4>{{ user.balance }}</h4>
+            <p>You own {{ user.balance }} Lute Bear Coin!</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="card">
+            <h2>Tokens</h2>
+            <p>You own {{ user.tokens | length }} Lute Bear Coin NFTs!</p>
+            <div class="grid-container">
+                {% for token in user.tokens %}
+                <div class="grid-item">
+                    <img src="{{user.tokens[token].url}}">
+                    <h3>{{user.tokens[token].note}}</h3>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section>
+
+        <div class="card">
+
+
+            <h2>Transaction History</h2>
+            <p>You're part of {{ user.transactions | length }} Lute Bear Coin transactions!</p>
+            <table>
+                {% for transaction in user.transactions %}
+
+                    {% if transaction.amount %}
+                        <tr>
+                            <td>{{transaction.timestamp | format_date}}</td>
+                            <td>{{transaction.user_from_nickname}} sent {{transaction.user_to_nickname}} {{transaction.amount}} LBC</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td>{{transaction.timestamp | format_date}}</td>
+                            <td>{{transaction.user_from_nickname}} sent {{transaction.user_to_nickname}} <a href="{{transaction.token_url}}">1 NFT</a></td>
+                        </tr>
+                    {% endif %}
+
+                {% endfor %}
+            </table>
+
+        </div>
+
+    </section>    
+</body>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+    <meta name="format-detection" content="telephone=no">
+</head>
+
+<body>
+    <!-- Banner -->
+    <section>
+        <a href="/">
+            <h1>Lute Bear Coin</h1>
+            <img class="logo" src="/static/logo.png">
+        </a>
+    </section>
+
+    <section>
+
+        <div class="card">
+
+            <h2>Transaction</h2>
+            <p>You're about to send an NFT!</p>
+
+            <form action="/transaction" method="post">
+                <div class="card">
+                    <!-- <label for="to">Recipient</label> -->
+                     <p>Recipient</p>
+
+                    <select type="string" name="to" required>
+                        <option></option>
+                        {% for username in users %}
+                        <option value="{{username}}">{{username}}</option>
+                        {% endfor %}
+                    </select>
+                    
+                    <p>Token</p>
+                    
+                    <select type="string" name="token" required>
+                        <option></option>
+                        {% for token in user.tokens %}
+                        <option value="{{token}}">{{token}} {{user.tokens[token].note}}</option>
+                        {% endfor %}
+                    </select>
+                    
+                    <input type="hidden" name="transaction_type" value="nft"/>
+
+                    <button type="submit">Submit</button>
+                </div>    
+            </form>
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <section>
+        <div class="card">
+            <h2>Tokens</h2>
+            <p>You own {{ user.tokens | length }} Lute Bear Coin NFTs!</p>
+            <div class="grid-container">
+                {% for token in user.tokens %}
+                <div class="grid-item">
+                    <img src="{{user.tokens[token].url}}">
+                    <h3>{{user.tokens[token].note}}</h3>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    </section>    
+</body>

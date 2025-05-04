@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Wallet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+    <meta name="format-detection" content="telephone=no">
+</head>
+
+<body>
+    <section>
+        <a href="/">
+            <h1>Lute Bear Coin</h1>
+            <img class="logo" src="/static/logo.png">
+        </a>
+    </section>
+    <section>
+        <div class="card">
+            <h2>Login</h2>
+
+            <form action="/login" method="post">
+                <div class="card">
+                     <p>Username</p>
+                    <input type="text" name="username" required />
+                    
+                    <p>Password</p>
+                    <input type="password" name="password" required />
+                    
+                    <button type="submit">Submit</button>
+                </div>    
+            </form>
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+        </div>
+    </section>
+    <section>
+        <div class="card">
+            <h2>About</h2>
+            <p>Welcome to the Lute Bear Coin Network!</p>
+            <img src="/static/mascott.png">
+            <br>The most, uh trustworthy(?) cryptocurreny network run by bears who play instruments.</p>
+        </div>
+    </section>
+</body>
