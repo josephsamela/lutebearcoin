@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, redirect, make_response, jsonify
+from flask import Flask, render_template, request, redirect, make_response, jsonify
 
 import datetime
 
@@ -41,7 +41,7 @@ def login():
                 return render_template("login.html", error="Invalid username or password")
             session = db.start_session(username)
 
-            response = make_response(redirect(url_for('wallet')))
+            response = make_response(redirect('wallet'))
             response.set_cookie('session', session.token, expires=session.expires)
             return response
 
@@ -49,14 +49,14 @@ def login():
 def logout():
     user = authentication_check(request)
     db.end_session(user.username)
-    return redirect(url_for("wallet"))
+    return redirect("wallet")
 
 @app.route("/transaction", methods=["POST"])
 def transaction():
 
     user_from = authentication_check(request)
     if not user_from:
-        return redirect(url_for("login"))
+        return redirect("login")
 
     transaction_type = request.form.get("transaction_type")
     user_to = request.form.get("to")
@@ -90,7 +90,7 @@ def transaction():
                 amount=int(transaction_amount)
             )
 
-            return make_response(redirect(url_for('success')))
+            return make_response(redirect('success'))
 
         case 'nft':
 
@@ -111,16 +111,16 @@ def transaction():
                 token=transaction_token
             )
 
-            return make_response(redirect(url_for('success')))
+            return make_response(redirect('success'))
 
         case _:
-            return redirect(url_for("wallet"))
+            return redirect("wallet")
 
 @app.route("/send_lbc")
 def send_lbc():
     user = authentication_check(request)
     if not user:
-        return redirect(url_for("login"))
+        return redirect("login")
 
     return render_template("send_lbc.html", user=user, users=db.user_list(user))
 
@@ -128,7 +128,7 @@ def send_lbc():
 def send_nft():
     user = authentication_check(request)
     if not user:
-        return redirect(url_for("login"))
+        return redirect("login")
 
     return render_template("send_nft.html", user=user, users=db.user_list(user))
 
@@ -136,7 +136,7 @@ def send_nft():
 def success():
     user = authentication_check(request)
     if not user:
-        return redirect(url_for("login"))
+        return redirect("login")
 
     return render_template(
         "success.html", 
