@@ -63,6 +63,12 @@ class Database:
             if user.username == username:
                 return user
         return None
+    
+    def get_token(self, token_id):
+        for id,token in self.tokens.items():
+            if token.id == token_id:
+                return token
+        return None
 
     def start_session(self, username):
         session = Session(username)
@@ -202,6 +208,15 @@ class Token(Object):
                 owner = self.db.users[transaction.to]
 
         return owner
+    
+    @property
+    def transactions(self):
+        t = []
+        for id, transaction in self.db.transactions.items():
+            if transaction.token is self.id:
+                t.append(transaction)
+        t.reverse()
+        return t
 
     def to_dict(self):
         d = {

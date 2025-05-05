@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Wallet</title>
+    <link rel="icon" type="image/x-icon" href="/static/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <meta name="format-detection" content="telephone=no">
+</head>
+
+<body>
+    <section>
+        <a href="/">
+            <h1>Lute Bear Coin</h1>
+            <img class="logo" src="/static/logo.png">
+        </a>
+    </section>
+
+    <section>
+        <div class="card">
+            <h2>{{ token.note }}</h2>
+            <p>Owned by <a href="/user/{{token.owner.username}}">{{ token.owner.nickname }}</a></p>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <img src="{{token.url}}">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="card">
+            <h2>Transaction History</h2>
+            <p>This token has been part of {{ token.transactions | length }} transactions!</p>
+            <table>
+                {% for transaction in token.transactions %}
+                <tr>
+                    <td>{{transaction.timestamp | format_date}}</td>
+                    <td><a href="/user/{{transaction.user_from.username}}">{{transaction.user_from.nickname}}</a> sent this NFT to <a href="/user/{{transaction.user_to.username}}">{{transaction.user_to.nickname}}</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </section>
+
+    </section>
+    <section>
+        <div class="grid-container">
+            <a href="/" class="grid-item">
+                <button>Home</button>
+            </a>
+        </div>
+    </section>
+ 
+</body>

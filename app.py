@@ -35,6 +35,15 @@ def user(username):
         user=user
     )
 
+@app.route("/token/<token_id>")
+def token(token_id):
+    token_id = int(token_id)
+    token = db.get_token(token_id)
+    return render_template(
+        "token.html", 
+        token=token
+    )
+
 # Login route
 @app.route("/login", methods=["GET", "POST"])
 def login():

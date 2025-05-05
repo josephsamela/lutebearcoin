@@ -53,7 +53,9 @@
             <div class="grid-container">
                 {% for token in user.tokens %}
                 <div class="grid-item">
-                    <img src="{{user.tokens[token].url}}">
+                    <a href="/token/{{user.tokens[token].id}}">
+                        <img src="{{user.tokens[token].url}}">
+                    </a>
                     <h3>{{user.tokens[token].note}}</h3>
                 </div>
                 {% endfor %}
@@ -62,26 +64,23 @@
     </section>
 
     <section>
-
         <div class="card">
-
-
             <h2>Transaction History</h2>
             <p>You're part of {{ user.transactions | length }} Lute Bear Coin transactions!</p>
             <table>
                 {% for transaction in user.transactions %}
 
-                    {% if transaction.amount %}
-                        <tr>
-                            <td>{{transaction.timestamp | format_date}}</td>
-                            <td>{{transaction.user_from_nickname}} sent <a href="/user/{{transaction.user_to_username}}">{{transaction.user_to_nickname}}</a> {{transaction.amount}} LBC</td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td>{{transaction.timestamp | format_date}}</td>
-                            <td>{{transaction.user_from_nickname}} sent <a href="/user/{{transaction.user_to_username}}">{{transaction.user_to_nickname}}</a> <a href="{{transaction.token_url}}">1 NFT</a></td>
-                        </tr>
-                    {% endif %}
+                {% if transaction.amount %}
+                <tr>
+                    <td>{{transaction.timestamp | format_date}}</td>
+                    <td><a href="/user/{{transaction.user_from_username}}">{{transaction.user_from_nickname}}</a> sent <a href="/user/{{transaction.user_to_username}}">{{transaction.user_to_nickname}}</a> {{transaction.amount}} LBC</td>
+                </tr>
+                {% else %}
+                    <tr>
+                        <td>{{transaction.timestamp | format_date}}</td>
+                        <td><a href="/user/{{transaction.user_from_username}}">{{transaction.user_from_nickname}}</a> sent <a href="/user/{{transaction.user_to_username}}">{{transaction.user_to_nickname}}</a> <a href="/token/{{transaction.token}}">1 NFT</a></td>
+                    </tr>
+                {% endif %}
 
                 {% endfor %}
             </table>
