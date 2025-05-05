@@ -28,7 +28,7 @@
             <form action="transaction" method="post">
                 <div class="card">
                     <!-- <label for="to">Recipient</label> -->
-                     <p>Recipient</p>
+                     <h3>Recipient</h3>
 
                     <select type="string" name="to" required>
                         <option></option>
@@ -37,7 +37,7 @@
                         {% endfor %}
                     </select>
                     
-                    <p>Token</p>
+                    <h3>Token</h3>
                     <select type="string" name="token" required>
                         <option></option>
                         {% for token in user.tokens %}
