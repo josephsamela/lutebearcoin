@@ -74,12 +74,12 @@
                     {% if transaction.amount %}
                         <tr>
                             <td>{{transaction.timestamp | format_date}}</td>
-                            <td>{{transaction.user_from_nickname}} sent {{transaction.user_to_nickname}} {{transaction.amount}} LBC</td>
+                            <td>{{transaction.user_from_nickname}} sent <a href="/user/{{transaction.user_to_username}}">{{transaction.user_to_nickname}}</a> {{transaction.amount}} LBC</td>
                         </tr>
                     {% else %}
                         <tr>
                             <td>{{transaction.timestamp | format_date}}</td>
-                            <td>{{transaction.user_from_nickname}} sent {{transaction.user_to_nickname}} <a href="{{transaction.token_url}}">1 NFT</a></td>
+                            <td>{{transaction.user_from_nickname}} sent <a href="/user/{{transaction.user_to_username}}">{{transaction.user_to_nickname}}</a> <a href="{{transaction.token_url}}">1 NFT</a></td>
                         </tr>
                     {% endif %}
 

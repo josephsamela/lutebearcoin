@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Wallet</title>
+    <title>Transaction</title>
     <link rel="icon" type="image/x-icon" href="/static/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
@@ -20,15 +20,12 @@
     </section>
 
     <section>
-
         <div class="card">
-
             <h2>Transaction</h2>
             <p>You're about to send LBC!</p>
 
             <form action="transaction" method="post">
                 <div class="card">
-                    <!-- <label for="to">Recipient</label> -->
                      <p>Recipient</p>
 
                     <select type="string" name="to" required>
@@ -42,7 +39,6 @@
                     <input type="number" name="amount" required />
                     
                     <input type="hidden" name="transaction_type" value="lbc"/>
-
                     <button type="submit">Submit</button>
                 </div>    
             </form>
@@ -60,5 +56,4 @@
         </div>
     </section>
 
-    </section>    
 </body>

@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Wallet</title>
+    <title>Transaction</title>
     <link rel="icon" type="image/x-icon" href="/static/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
@@ -22,7 +22,6 @@
     <section>
 
         <div class="card">
-
             <h2>Transaction</h2>
             <p>You're about to send an NFT!</p>
 
@@ -39,7 +38,6 @@
                     </select>
                     
                     <p>Token</p>
-                    
                     <select type="string" name="token" required>
                         <option></option>
                         {% for token in user.tokens %}
@@ -48,7 +46,6 @@
                     </select>
                     
                     <input type="hidden" name="transaction_type" value="nft"/>
-
                     <button type="submit">Submit</button>
                 </div>    
             </form>
@@ -73,5 +70,4 @@
         </div>
     </section>
 
-    </section>    
 </body>

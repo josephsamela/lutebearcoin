@@ -73,16 +73,16 @@ def transaction():
             # Validation Checks
 
             if not int(transaction_amount):
-                return render_template("send_lbc.html", user=user_from, error="Can only send whole number of LBC.")
+                return render_template("send_lbc.html", user=user_from, users=db.user_list(user_from), error="Can only send whole number of LBC.")
 
             if '.' in transaction_amount:
-                return render_template("send_lbc.html", user=user_from, error="Can only send whole number of LBC.")
+                return render_template("send_lbc.html", user=user_from, users=db.user_list(user_from), error="Can only send whole number of LBC.")
 
             if not db.get_user(user_to):
-                return render_template("send_lbc.html", user=user_from, error="Recipient does not exist.")
+                return render_template("send_lbc.html", user=user_from, users=db.user_list(user_from), error="Recipient does not exist.")
 
             if int(transaction_amount) > user_from.balance:
-                return render_template("send_lbc.html", user=user_from, error="Insufficient balance")
+                return render_template("send_lbc.html", user=user_from, users=db.user_list(user_from), error="Insufficient balance")
 
             db.write_transaction(
                 user_from=user_from.id,
@@ -97,13 +97,13 @@ def transaction():
             transaction_token = request.form.get("token")
 
             if not db.get_user(user_to):
-                return render_template("send_nft.html", user=user_from, error="Recipient does not exist.")
+                return render_template("send_nft.html", user=user_from, users=db.user_list(user), error="Recipient does not exist.")
 
             if not int(transaction_token):
-                return render_template("send_nft.html", user=user_from, error="You can only send Tokens you own.")
+                return render_template("send_nft.html", user=user_from, users=db.user_list(user), error="You can only send Tokens you own.")
 
             if not int(transaction_token) in user_from.tokens:
-                return render_template("send_nft.html", user=user_from, error="You can only send Tokens you own.")
+                return render_template("send_nft.html", user=user_from, users=db.user_list(user), error="You can only send Tokens you own.")
 
             db.write_transaction(
                 user_from=user_from.id,
