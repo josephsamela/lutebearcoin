@@ -125,6 +125,7 @@ button {
     font-family: 'Comic Neue';
     font-size: 18px;
     padding: 12px 0px 12px 0px;
+    margin-top: 1em;
 }
 
 .card {
