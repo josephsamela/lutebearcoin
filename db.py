@@ -145,7 +145,8 @@ class User(Object):
                 tokens[transaction.token] = self.db.tokens[transaction.token].to_dict()
 
             if getattr(transaction, 'from') is self.id:
-                tokens.pop(transaction.token)
+                if transaction.token in tokens:
+                    tokens.pop(transaction.token)
 
         return tokens
 
@@ -162,6 +163,10 @@ class User(Object):
                 balance += transaction.amount
 
             if getattr(transaction, 'from') is self.id:
+                
+                if getattr(transaction, 'to') == getattr(transaction, 'from') and self.id == 0:
+                    continue
+
                 balance -= transaction.amount
         
         return balance

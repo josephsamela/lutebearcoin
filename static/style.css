@@ -31,7 +31,7 @@ h3 {
 
 h4 {
     color: #4a1a19;
-    font-size: 75px;
+    font-size: 65px;
     margin: 0px;
     text-align: center;
 }
@@ -47,6 +47,10 @@ table {
     font-size: 11px;
     margin: 12px 0px 12px 0px;
     width: 100%;
+}
+
+td {
+    white-space: nowrap;
 }
 
 .error {
