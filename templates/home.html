@@ -94,3 +94,18 @@
     {% endif %}
 
 </body>
+
+<script>
+    var refresh = window.localStorage.getItem('refresh');
+    var now = Date.now()
+    if (refresh===null){
+        // If page has never been refreshed. Refresh.
+        window.localStorage.setItem('refresh', now+86400000);
+        window.location.reload();
+    }
+    else if (now > Number(refresh)){
+        // If page hasn't been refreshed in 24 hours. Refresh.
+        window.localStorage.setItem('refresh', now+86400000);
+        window.location.reload();
+    }
+</script>
