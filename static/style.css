@@ -18,7 +18,7 @@ h1 {
 
 h2 {
     color: #4a1a19;
-    font-size: 25px;
+    font-size: 23px;
     margin: 0px;
 }
 
@@ -147,7 +147,7 @@ p {
     height: 190px;
     border-radius: 10px;
     background-color: #deac54;
-    background-image:url(mascott.png);
+    background-image:url(bear1.png);
     background-position: left;
     background-size: 200px;
     background-repeat: no-repeat;
@@ -176,4 +176,30 @@ p {
     font-size: 15px;
     font-weight: 900;
     color: #F8EEDF;
+}
+
+
+
+.bear {
+    background-position: center;
+    background-size: 315px;
+    background-repeat: no-repeat;
+    min-height: 400px;
+    background-position-y: bottom
+}
+
+.bear1 {
+    background-image:url(bear1.png);
+}
+.bear2 {
+    background-image:url(bear2.png);
+}
+.bear3 {
+    background-image:url(bear3.png);
+}
+.bear4 {
+    background-image:url(bear4.png);
+}
+.bear5 {
+    background-image:url(bear5.png);
 }
