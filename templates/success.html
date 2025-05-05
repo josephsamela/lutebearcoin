@@ -25,7 +25,7 @@
             <div class="card">
                 <h2>Success!</h2>
                 <p><br>You just sent <b>{{ user.transactions[0].user_to_nickname }}</b> {{ user.transactions[0].amount }} LBC.</p>
-                <a href="/">
+                <a href="/wallet">
                     <br><br>
                     <button type="submit">Back to Wallet</button>
                 </a>
@@ -47,7 +47,7 @@
                 <p><br>You just sent <b>{{ user.transactions[0].user_to_nickname }}</b> the NFT <br><b>{{ user.transactions[0].token_note }}</b></p>
                 <br>
                 <img src="{{ user.transactions[0].token_url }}">
-                <a href="/">
+                <a href="/wallet">
                     <br><br>
                     <button type="submit">Back to Wallet</button>
                 </a>

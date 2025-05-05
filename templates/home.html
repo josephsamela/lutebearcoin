@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Home</title>
+    <link rel="icon" type="image/x-icon" href="/static/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+    <meta name="format-detection" content="telephone=no">
+</head>
+
+<body>
+    <section>
+        <a href="/">
+            <h1>Lute Bear Coin</h1>
+            <img class="logo" src="static/logo.png">
+        </a>
+    </section>
+    <section>
+        <div class="card">
+
+            {% if user is none %}
+                <h2>Welcome!</h2>
+                <br>
+                <p>Click here to login!</p>
+                <br>
+                <a href="/login">
+                    <button >Login</button>
+                </a>
+            {% else %}
+                <h2>Welcome, {{user.nickname}}!</h2>
+                <br>
+                <p>Click here to access you Wallet!</p>
+                <br>
+                <a href="/wallet">
+                    <button >Wallet</button>
+                </a>
+            {% endif %}
+
+        </div>
+    </section>
+    <section>
+        <div class="card bear bear1">
+            <h2>About</h2>
+            <br>
+            <p>Welcome to the Lute Bear Coin Network!<br>The most, uh trustworthy(?) cryptocurreny network run by bears who play instruments.</p>
+        </div>
+    </section>
+    <section>
+        <div class="card bear bear2">
+            <h2>How Does It Work?</h2>
+            <br>
+            <p>When a transaction request is submitted, the bears look at it. If they approve, the transaction is added to the blockchain. Bears can't read.</p>
+        </div>
+    </section>
+    <section>
+        <div class="card bear bear3">
+            <h2>Is It Decentralized?</h2>
+            <br>
+            <p>Yes! We bought the bears a photocopy machine so they each have a copy of the ledger. This process is infallible and cannot be improved.</p>
+        </div>
+    </section>
+    <section>
+        <div class="card bear bear4">
+            <h2>How Fast Are Transactions?</h2>
+            <br>
+            <p>Honestly, it's pretty slow. Bears hibernate during the winter and spend the summer months eating salmon, berries and whatever people leave in dumpsters. But, they get to it eventually.</p>
+        </div>
+    </section>
+    <section>
+        <div class="card bear bear5">
+            <h2>Does It Support NFTs?</h2>
+            <br>
+            <p>Yes! Many great artworks are published and traded on the Lute Bear Coin network. I mean, most of the artwork is pretty bad. But don't tell the bears. It makes them feel sad.</p>
+        </div>
+    </section>
+
+    {% if user is not none %}
+
+    <section>
+        <div class="grid-container">
+            <a href="/logout" class="grid-item">
+                <button>Logout</button>
+            </a>
+        </div>
+    </section>
+
+    {% endif %}
+
+</body>

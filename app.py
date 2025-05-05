@@ -10,6 +10,14 @@ db = Database('db.xlsx')
 app = Flask(__name__)
 
 @app.route("/")
+def home():
+    user = authentication_check(request)
+    return render_template(
+        "home.html", 
+        user=user
+    )
+
+@app.route("/wallet")
 def wallet():
     user = authentication_check(request)
     if not user:
@@ -42,7 +50,7 @@ def login():
                 return render_template("login.html", error="Invalid username or password")
             session = db.start_session(username)
 
-            response = make_response(redirect('/'))
+            response = make_response(redirect('/wallet'))
             response.set_cookie('session', session.token, expires=session.expires)
             return response
 
