@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, make_response, jsonify
 
 import datetime
+import pytz
 
 from db import Database
 db = Database('db.xlsx')
@@ -152,8 +153,9 @@ def authentication_check(request):
 
 @app.template_filter()
 def format_date(d):
-    dt = datetime.datetime.fromisoformat(d)
-    return dt.strftime("%b %-d, %Y %-I:%M %p")
+    eastern = pytz.timezone('US/Eastern')
+    dt = datetime.datetime.fromisoformat(d).replace(tzinfo=datetime.UTC)
+    return dt.astimezone(eastern).strftime("%b %-d, %Y %-I:%M %p")
 
 @app.template_filter()
 def format_credit_date(d):
