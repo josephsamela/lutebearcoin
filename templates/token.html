@@ -40,11 +40,31 @@
             <h2>Transaction History</h2>
             <p>This token has been part of {{ token.transactions | length }} transactions!</p>
             <table>
-                {% for transaction in token.transactions %}
                 <tr>
-                    <td>{{transaction.timestamp | format_date}}</td>
-                    <td><a href="/user/{{transaction.user_from.username}}">{{transaction.user_from.nickname}}</a> sent this NFT to <a href="/user/{{transaction.user_to.username}}">{{transaction.user_to.nickname}}</a></td>
+                    <th>ID</th>
+                    <th>Timestamp</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Sent</th>
                 </tr>
+                {% for transaction in token.transactions %}
+                {% if transaction.amount %}
+                <tr>
+                    <td>{{transaction.id}}</td>
+                    <td>{{transaction.timestamp | format_date}}</td>
+                    <td><a href="/user/{{transaction.user_from.username}}">{{transaction.user_from.nickname}}</a></td>
+                    <td><a href="/user/{{transaction.user_to.username}}">{{transaction.user_to.nickname}}</a></td>
+                    <td>{{transaction.amount}} LBC</td>
+                </tr>
+                {% else %}
+                    <tr>
+                        <td>{{transaction.id}}</td>
+                        <td>{{transaction.timestamp | format_date}}</td>
+                        <td><a href="/user/{{transaction.user_from.username}}">{{transaction.user_from.nickname}}</a></td>
+                        <td><a href="/user/{{transaction.user_to.username}}">{{transaction.user_to.nickname}}</a></td>
+                        <td><a href="/token/{{transaction.token}}">{{token.note | truncate(17,true,'...',0) }}</a></td>
+                    </tr>
+                {% endif %}
                 {% endfor %}
             </table>
         </div>
