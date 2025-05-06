@@ -27,11 +27,25 @@
     {% if user.transactions[0].amount %}
 
         <section>
-            <div class="card">
+            <div class="card bear bear7">
                 <h2>Success!</h2>
-                <p><br>You just sent <b>{{ user.transactions[0].user_to_nickname }}</b> {{ user.transactions[0].amount }} LBC.</p>
+                <p>You just sent <a href="/user/{{ user.transactions[0].user_to_username }}">{{ user.transactions[0].user_to_nickname }}</a> {{ user.transactions[0].amount }} LBC.</p>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
                 <a href="/wallet">
-                    <br><br>
                     <button type="submit">Back to Wallet</button>
                 </a>
             </div>
@@ -47,13 +61,24 @@
     {% else %}
 
         <section>
-            <div class="card">
+            <div class="card bear bear6">
                 <h2>Success!</h2>
-                <p><br>You just sent <b>{{ user.transactions[0].user_to_nickname }}</b> the NFT <br><b>{{ user.transactions[0].token_note }}</b></p>
+                <p>You just sent <a href="/user/{{ user.transactions[0].user_to_username }}">{{ user.transactions[0].user_to_nickname }}</a> the NFT <br><a href="/token/{{ user.transactions[0].token}}">{{ user.transactions[0].token_note }}</a></p>
                 <br>
-                <img src="{{ user.transactions[0].token_url }}">
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
                 <a href="/wallet">
-                    <br><br>
                     <button type="submit">Back to Wallet</button>
                 </a>
             </div>
