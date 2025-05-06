@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Wallet</title>
+    <title>Transactions</title>
     <link rel="icon" type="image/x-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -25,53 +25,16 @@
     </section>
 
     <section>
-        <div class="credit-card">
-            <p class="card-title">LBC</p>
-            <p class="card-text">{{ user.id | format_account_number }}</p>
-            <p class="card-subtext">{{ user.nickname }} {{ user.created_at | format_credit_date }}</p>
-        </div>
-    </section>
-
-    <section>
-        <div class="grid-container">
-            <a href="send_lbc" class="grid-item">
-                <button>Send LBC</button>
-            </a>
-            <a href="send_nft" class="grid-item">
-                <button>Send NFT</button>
-            </a>
-        </div>
-    </section>
-
-    <section>
-        <div class="card">
-            <h2>Balance</h2>
-            <h4>{{ user.balance }}</h4>
-            <p>You own {{ user.balance }} Lute Bear Coin!</p>
-        </div>
-    </section>
-
-    <section>
-        <div class="card">
-            <h2>Tokens</h2>
-            <p>You own {{ user.tokens | length }} Lute Bear Coin NFTs!</p>
-            <div class="grid-container">
-                {% for token in user.tokens %}
-                <div class="grid-item">
-                    <a href="/token/{{user.tokens[token].id}}">
-                        <img src="{{user.tokens[token].url}}">
-                    </a>
-                    <h3>{{user.tokens[token].note}}</h3>
-                </div>
-                {% endfor %}
-            </div>
+        <div class="card bear bear3">
+            <h2>Transactions</h2>
+            <p>Lute Bear Coin transactions are public!<br>Remember, bears review all your transactions!</p>
         </div>
     </section>
 
     <section>
         <div class="card">
             <h2>Transaction History</h2>
-            <p>You're part of {{ user.transactions | length }} Lute Bear Coin transactions!</p>
+            <p>This is <b>every</b> Lute Bear Coin transaction!</p>
             <table>
                 <tr>
                     <th>ID</th>
@@ -80,7 +43,7 @@
                     <th>To</th>
                     <th>Sent</th>
                 </tr>
-                {% for transaction in user.transactions[0:10] %}
+                {% for transaction in transactions %}
                 {% if transaction.amount %}
                 <tr>
                     <td>{{transaction.id}}</td>
@@ -100,20 +63,13 @@
                 {% endif %}
                 {% endfor %}
             </table>
-            {% if user.transactions | length > 10  %}
-            <p>Showing your last 10 transactions.</p>
-            <br>
-            <a href="/transactions">
-                <button>All Transactions</button>
-            </a>
-            {% endif %}
         </div>
     </section>
     <section>
         <div class="grid-container">
-            <a href="/logout" class="grid-item">
-                <button>Logout</button>
+            <a href="/wallet" class="grid-item">
+                <button>Back to Wallet</button>
             </a>
         </div>
-    </section>    
+    </section> 
 </body>

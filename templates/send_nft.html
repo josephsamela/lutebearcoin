@@ -68,7 +68,9 @@
             <div class="grid-container">
                 {% for token in user.tokens %}
                 <div class="grid-item">
-                    <img src="{{user.tokens[token].url}}">
+                    <a href="/token/{{user.tokens[token].id}}">
+                        <img src="{{user.tokens[token].url}}">
+                    </a>
                     <h3>{{user.tokens[token].note}}</h3>
                 </div>
                 {% endfor %}

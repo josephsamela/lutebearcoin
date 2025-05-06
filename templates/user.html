@@ -58,30 +58,36 @@
     </section>
 
     <section>
-
         <div class="card">
-
-
             <h2>Transaction History</h2>
-            <p>{{ user.nickname }} has been part of {{ user.transactions | length }} transactions!</p>
             <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Timestamp</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Sent</th>
+                </tr>
                 {% for transaction in user.transactions %}
-
-                    {% if transaction.amount %}
-                        <tr>
-                            <td>{{transaction.timestamp | format_date}}</td>
-                            <td><a href="/user/{{transaction.user_from_username}}">{{transaction.user_from_nickname}}</a> sent <a href="/user/{{transaction.user_to_username}}">{{transaction.user_to_nickname}}</a> {{transaction.amount}} LBC</td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td>{{transaction.timestamp | format_date}}</td>
-                            <td><a href="/user/{{transaction.user_from_username}}">{{transaction.user_from_nickname}}</a> sent <a href="/user/{{transaction.user_to_username}}">{{transaction.user_to_nickname}}</a> <a href="/token/{{transaction.token}}">1 NFT</a></td>
-                        </tr>
-                    {% endif %}
-
+                {% if transaction.amount %}
+                <tr>
+                    <td>{{transaction.id}}</td>
+                    <td>{{transaction.timestamp | format_date}}</td>
+                    <td><a href="/user/{{transaction.user_from_username}}">{{transaction.user_from_nickname}}</a></td>
+                    <td><a href="/user/{{transaction.user_to_username}}">{{transaction.user_to_nickname}}</a></td>
+                    <td>{{transaction.amount}} LBC</td>
+                </tr>
+                {% else %}
+                    <tr>
+                        <td>{{transaction.id}}</td>
+                        <td>{{transaction.timestamp | format_date}}</td>
+                        <td><a href="/user/{{transaction.user_from_username}}">{{transaction.user_from_nickname}}</a></td>
+                        <td><a href="/user/{{transaction.user_to_username}}">{{transaction.user_to_nickname}}</a></td>
+                        <td><a href="/token/{{transaction.token}}">{{transaction.token_note | truncate(17,true,'...',0) }}</a></td>
+                    </tr>
+                {% endif %}
                 {% endfor %}
             </table>
-
         </div>
     </section>
     

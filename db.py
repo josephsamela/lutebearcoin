@@ -100,6 +100,13 @@ class Database:
         for i in range(16):
             s = s + str(randint(0,9))
         return s
+    
+    def transaction_list(self):
+        transactions = []
+        for i,t in self.transactions.items():
+            transactions.append(t.to_dict())
+        transactions.reverse()
+        return transactions
 
 class Object:
     def __init__(self, d, db):
@@ -241,7 +248,7 @@ class Transaction(Object):
     @property
     def user_to(self):
         return self.db.users[getattr(self, 'to')]
-    
+
     def to_dict(self):
         d = {
             'id': self.id,

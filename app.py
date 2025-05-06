@@ -69,6 +69,14 @@ def logout():
     db.end_session(user.username)
     return redirect("/")
 
+@app.route("/transactions")
+def transactions():
+    user = authentication_check(request)
+    return render_template(
+        "transactions.html",
+        transactions=db.transaction_list()
+    )
+
 @app.route("/transaction", methods=["POST"])
 def transaction():
 

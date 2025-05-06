@@ -139,8 +139,12 @@ button {
 }
 
 p {
-    margin: 0px;
+    margin: 10px 0px 0px 0px;
     font-size: 14px;
+}
+
+a {
+    color: #4a1a19
 }
 
 /* Credit Card */
@@ -181,13 +185,11 @@ p {
     color: #F8EEDF;
 }
 
-
-
 .bear {
     background-position: center;
     background-size: 315px;
     background-repeat: no-repeat;
-    min-height: 400px;
+    min-height: 380px;
     background-position-y: bottom
 }
 
