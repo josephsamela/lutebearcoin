@@ -26,9 +26,10 @@
 
     <section>
         <div class="credit-card">
-            <p class="card-title">LBC</p>
+            <!-- <img class="card-award-icon" src="/static/award1.png">
+            <p class="card-award-text">Most LBC</p> -->
             <p class="card-text">{{ user.id | format_account_number }}</p>
-            <p class="card-subtext">{{ user.nickname }} {{ user.created_at | format_credit_date }}</p>
+            <span class="card-subtext" style="float: left;">{{ user.nickname }} {{ user.created_at | format_credit_date }}</span><span class="card-subtext">{{ user.balance }} LBC • {{ user.tokens | length }} NFT</span>
         </div>
     </section>
 
