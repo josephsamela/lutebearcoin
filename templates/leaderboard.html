@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Wallet</title>
+    <link rel="icon" type="image/x-icon" href="/static/logo.png">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Lute Bear Coin">
+    <link rel="apple-touch-icon" href="/static/logo.png">
+    <meta name="theme-color" content="#4a1a19">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+    <meta name="format-detection" content="telephone=no">
+</head>
+<body>
+    <section>
+        <a href="/">
+            <h1>Lute Bear Coin</h1>
+            <img class="logo" src="static/logo.png">
+        </a>
+    </section>
+
+    <section>
+        <div class="card">
+            <h2>Leaderboard</h2>
+            <p>The leaderboard celebrates the achievements of the top users of the Lute Bear Coin network!</p>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <img src="/static/award1.png">
+                    <h2>Most LBC</h2>
+                </div>
+                <div class="grid-item">
+                    <img src="/static/award2.png">
+                    <h2>Most NFT</h2>
+                </div>
+            </div>
+            <p>Users earn awards that appear on their profile by completing Lute Bear Coin transactions!</p>
+        </div>
+    </section>
+
+    {% for user in users%}
+    <section>
+        <a href="/user/{{user.username}}">
+        <div class="credit-card">
+            {% for award in user.awards %}
+            <img class="card-award-icon" src="/static/{{ award.icon }}">
+            <p class="card-award-text">{{ award.name }}</p>
+            {% endfor %}
+            <p class="card-text">{{ user.id | format_account_number }}</p>
+            <span class="card-subtext" style="float: left;">{{ user.nickname }} {{ user.created_at | format_credit_date }}</span><span class="card-subtext">{{ user.balance }} LBC • {{ user.tokens | length }} NFT</span>
+        </div>
+        </a>
+    </section>
+    {% endfor %}
+
+    <section>
+        <div class="grid-container">
+            <a href="/wallet" class="grid-item">
+                <button>Back to Wallet</button>
+            </a>
+        </div>
+    </section>
+</body>

@@ -141,6 +141,37 @@ def safe_serialize(obj):
 class User(Object):
 
     @property
+    def awards(self):
+
+        awards = []
+
+        # Achievement 1 : Most LBC
+        a1 = True
+        for id,user in self.db.users.items():
+            if id == 0:
+                continue
+            if user.balance > self.balance:
+                a1 = False
+        if a1:
+            awards.append(
+                Achievement('Most LBC', 'award1.png')
+            )
+
+        # Achievement 2 : Most NFT
+        a2 = True
+        for id,user in self.db.users.items():
+            if id == 0:
+                continue
+            if len(user.tokens) > len(self.tokens):
+                a2 = False
+        if a2:
+            awards.append(
+                Achievement('Most NFT', 'award2.png')
+            )
+
+        return awards
+
+    @property
     def tokens(self):
         tokens = {}
         for id, transaction in self.db.transactions.items():
@@ -270,6 +301,11 @@ class Transaction(Object):
             d['token_note'] = self.db.tokens[self.token].note
 
         return d
+
+class Achievement:
+    def __init__(self, name, icon):
+        self.name = name
+        self.icon = icon
 
 class Session:
     def __init__(self, username):

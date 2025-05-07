@@ -27,6 +27,16 @@ def wallet():
         user=user
     )
 
+@app.route("/leaderboard")
+def leaderboard():
+    users = list(db.users.values())
+    users = users[1:]
+    users = sorted(users, key=lambda x: x.balance, reverse=True)
+    return render_template(
+        "leaderboard.html", 
+        users=users
+    )
+
 @app.route("/user/<username>")
 def user(username):
     user = db.get_user(username)
