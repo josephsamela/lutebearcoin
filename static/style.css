@@ -173,20 +173,21 @@ a {
 .card-award-icon {
     padding: 15px 0px 0px 220px;
     width: 70px;
-    position: absolute;
+    /* position: absolute; */
 }
 .card-award-text {
-    padding: 75px 0px 0px 196px;
+    padding: 0px 0px 0px 196px;
     position: absolute;
     font-size: 15px;
     font-weight: 900;
     color: #F8EEDF;
     text-align: center;
     width: 119px;
+    margin-top: 0px;
 }
 
 .card-text {
-    margin: 116px 0px 0px 18px;
+    margin: 30px 0px 0px 18px;
     font-size: 24px;
     font-weight: 900;
     color: #F8EEDF;
@@ -195,7 +196,7 @@ a {
 }
 
 .card-subtext {
-    margin: 152px 18px 0px 18px;
+    margin: 65px 18px 0px 18px;
     font-size: 15px;
     font-weight: 900;
     color: #F8EEDF;

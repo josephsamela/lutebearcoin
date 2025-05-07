@@ -169,6 +169,8 @@ class User(Object):
                 Achievement('Most NFT', 'award2.png')
             )
 
+        awards.append(Achievement('', 'award0.png'))
+
         return awards
 
     @property
