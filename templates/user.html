@@ -24,14 +24,23 @@
         </a>
     </section>
 
+    {% if user.id == 0 %}
+    <section>
+        <div class="card bear bear9">
+            <h2>The Lute Bear Council</h2>
+            <p>The Lute Bear Council is the mysterious group who adminsters the Lute Bear Coin network.</p>
+        </div>
+    </section>
+    {% else %}
     <section>
         <div class="credit-card">
             <img class="card-award-icon" src="/static/{{ user.awards[0].icon }}">
             <p class="card-award-text">{{ user.awards[0].name }}</p>
             <p class="card-text">{{ user.id | format_account_number }}</p>
-            <span class="card-subtext" style="float: left;">{{ user.nickname }} {{ user.created_at | format_credit_date }}</span><span class="card-subtext">{{ user.balance }} LBC • {{ user.tokens | length }} NFT</span>
+            <span class="card-subtext spanleft">{{ user.nickname }} {{ user.created_at | format_credit_date }}</span><span class="card-subtext spanright">{{ user.balance }} LBC • {{ user.tokens | length }} NFT</span>
         </div>
     </section>
+    {% endif %}
 
     <section>
         <div class="card">
@@ -41,6 +50,7 @@
         </div>
     </section>
 
+    {% if not user.id == 0 %}
     <section>
         <div class="card">
             <h2>Tokens</h2>
@@ -57,6 +67,7 @@
             </div>
         </div>
     </section>
+    {% endif %}
 
     <section>
         <div class="card">

@@ -202,8 +202,14 @@ a {
     color: #F8EEDF;
 }
 
-span {
+.spanleft {
+    float: left;
+    margin-right: 0px;
+}
+
+.spanright {
     float: right;
+    margin-left: 0px;
 }
 
 .bear {
@@ -237,4 +243,10 @@ span {
 }
 .bear8 {
     background-image:url(bear8.png);
+}
+.bear9 {
+    background-image:url(bear9.png);
+}
+.bear10 {
+    background-image:url(bear10.png);
 }
