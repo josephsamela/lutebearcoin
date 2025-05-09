@@ -27,8 +27,8 @@
     {% if user.id == 0 %}
     <section>
         <div class="card bear bear9">
-            <h2>The Lute Bear Council</h2>
-            <p>The Lute Bear Council is the mysterious group who adminsters the Lute Bear Coin network.</p>
+            <h2>System</h2>
+            <p>The system account is run by the mysterious group known as the <b>Lute Bear Council</b>.</p>
         </div>
     </section>
     {% else %}
@@ -42,6 +42,7 @@
     </section>
     {% endif %}
 
+    {% if not user.id == 0 %}    
     <section>
         <div class="card">
             <h2>Balance</h2>
@@ -49,6 +50,7 @@
             <p>{{ user.nickname }} owns {{ user.balance }} Lute Bear Coin!</p>
         </div>
     </section>
+    {% endif %}
 
     {% if not user.id == 0 %}
     <section>
