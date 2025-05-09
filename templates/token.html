@@ -62,6 +62,24 @@
     {% endif %}
     {% endif %}
 
+    {% if user.id == token.owner.id and not token.for_sale %}      
+        <section>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <a href="/send_nft">
+                        <button>Send NFT</button>
+                    </a>
+                </div>
+                <div class="grid-item">
+                    <form action="/sell" method="post">
+                        <input type="hidden" name="token_id" value="{{ token.id }}"/>
+                        <button type="submit">Sell NFT</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
     <section>
         <div class="card">
             <h2>Transaction History</h2>
@@ -96,24 +114,6 @@
             </table>
         </div>
     </section>
-
-    {% if user.id == token.owner.id and not token.for_sale %}      
-        <section>
-            <div class="grid-container">
-                <div class="grid-item">
-                    <a href="/send_nft">
-                        <button>Send NFT</button>
-                    </a>
-                </div>
-                <div class="grid-item">
-                    <form action="/sell" method="post">
-                        <input type="hidden" name="token_id" value="{{ token.id }}"/>
-                        <button type="submit">Sell NFT</button>
-                    </form>
-                </div>
-            </div>
-        </section>
-    {% endif %}
     
     <section>
         <div class="grid-container">
