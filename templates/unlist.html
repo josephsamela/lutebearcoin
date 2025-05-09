@@ -25,32 +25,20 @@
         </a>
     </section>
     <section>
-
         <div class="card">
-            <h2>Transaction</h2>
-            <p>You're about to <b>send</b> this NFT!</p>
-
-            <form action="transaction" method="post">
+            <h2>Unlist Item For Sale</h2>
+            <p>You're about unlist this token for sale!</p>
+            <form action="/transaction" method="post">
                 <div class="card">
-                     <h3>Recipient</h3>
-
-                    <select type="string" name="to" required>
-                        <option></option>
-                        {% for username in users %}
-                        <option value="{{username}}">{{username}}</option>
-                        {% endfor %}
-                    </select>
-                    
                     <h3>Token</h3>
-                    <select type="string" name="token" required>
-                        <option></option>
-                        {% for token in user.tokens %}
-                        <option value="{{token}}">{{token}} {{user.tokens[token].note}}</option>
-                        {% endfor %}
-                    </select>
+                    <input type="string" name="token" value="{{ token.note }}" disabled="disabled" required />
+                    <input type="hidden" name="token_id" value="{{ token.id }}" required />
+                    
+                    <h3>Price</h3>
+                    <input type="string" name="amount" value="{{ token.listing.amount }}" disabled="disabled" required />
                     
                     <br><br>
-                    <input type="hidden" name="transaction_type" value="nft"/>
+                    <input type="hidden" name="transaction_type" value="unlist" required/>
                     <button type="submit">Submit</button>
                 </div>    
             </form>
@@ -62,18 +50,13 @@
 
     <section>
         <div class="card">
-            <h2>Tokens</h2>
-            <p>You own {{ user.tokens | length }} Lute Bear Coin NFT!</p>
+            <h2>{{ token.note }}</h2>
+            <p>Owned by <a href="/user/{{token.owner.username}}">{{ token.owner.nickname }}</a></p>
             <div class="grid-container">
-                {% for token in user.tokens %}
                 <div class="grid-item">
-                    <a href="/token/{{user.tokens[token].id}}">
-                        {% if user.tokens[token].for_sale %}<img class="for-sale" src="/static/forsale.png">{% endif %}
-                        <img src="{{user.tokens[token].url}}">
-                    </a>
-                    <h3>{{user.tokens[token].note}}</h3>
+                    {% if token.for_sale %}<img class="for-sale" src="/static/forsale.png">{% endif %}
+                    <img src="{{token.url}}">
                 </div>
-                {% endfor %}
             </div>
         </div>
     </section>

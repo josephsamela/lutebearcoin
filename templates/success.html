@@ -16,89 +16,139 @@
 </head>
 
 <body>
-    <!-- Banner -->
     <section>
         <a href="/">
             <h1>Lute Bear Coin</h1>
-            <img class="logo" src="static/logo.png">
+        </a>
+        <a href="/wallet">
+            <img class="logo" src="/static/logo.png">
         </a>
     </section>
-
-    {% if user.transactions[0].amount %}
-
-        <section>
-            <div class="card bear bear7">
-                <h2>Success!</h2>
-                <p>You just sent <a href="/user/{{ user.transactions[0].user_to_username }}">{{ user.transactions[0].user_to_nickname }}</a> {{ user.transactions[0].amount }} LBC.</p>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <a href="/wallet">
-                    <button type="submit">Back to Wallet</button>
-                </a>
-            </div>
-        <section>
-        <section>
-            <div class="card">
-                <h2>Balance</h2>
-                <h4>{{ user.balance }}</h4>
-                <p>You own {{ user.balance }} Lute Bear Coin!</p>
-            </div>
-        </section>
-
-    {% else %}
-
-        <section>
-            <div class="card bear bear6">
-                <h2>Success!</h2>
-                <p>You just sent <a href="/user/{{ user.transactions[0].user_to_username }}">{{ user.transactions[0].user_to_nickname }}</a> the NFT <br><a href="/token/{{ user.transactions[0].token}}">{{ user.transactions[0].token_note }}</a></p>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <a href="/wallet">
-                    <button type="submit">Back to Wallet</button>
-                </a>
-            </div>
-        </section>
-        <section>
-            <div class="card">
-                <h2>Tokens</h2>
-                <p>You own {{ user.tokens | length }} Lute Bear Coin NFTs!</p>
-                <div class="grid-container">
-                    {% for token in user.tokens %}
-                    <div class="grid-item">
-                        <img src="{{user.tokens[token].url}}">
-                        <h3>{{user.tokens[token].note}}</h3>
-                    </div>
-                    {% endfor %}
+    {% if type == "lbc" %}
+    <section>
+        <div class="card bear bear7">
+            <h2>Success!</h2>
+            <p>You just sent <a href="/user/{{ event.user_to.username }}">{{ event.user_to.nickname }}</a> {{ event.amount }} LBC.</p>
+            <a href="/wallet">
+                <button class="card-button">Back to Wallet</button>
+            </a>
+        </div>
+    <section>
+    <section>
+        <div class="card">
+            <h2>Balance</h2>
+            <h4>{{ event.user_from.balance }}</h4>
+            <p>You own {{ event.user_from.balance }} Lute Bear Coin!</p>
+        </div>
+    </section>
+    {% elif type == "nft" %}
+    <section>
+        <div class="card bear bear6">
+            <h2>Success!</h2>
+            <p>You just sent <a href="/user/{{ event.user_to.username }}">{{ event.user_to.nickname }}</a> the NFT <br><a href="/token/{{ event.token }}">{{ event.db.tokens[event.token].note }}</a></p>
+            <a href="/wallet">
+                <button class="card-button">Back to Wallet</button>
+            </a>
+        </div>
+    </section>
+    <section>
+        <div class="card">
+            <h2>Tokens</h2>
+            <p>You own {{ event.user_from.tokens | length }} Lute Bear Coin NFT!</p>
+            <div class="grid-container">
+                {% for if,token in event.user_from.tokens.items() %}
+                <div class="grid-item">
+                    <a href="/token/{{token.id}}">
+                        {% if token.for_sale %}<img class="for-sale" src="/static/forsale.png">{% endif %}
+                        <img src="{{token.url}}">
+                    </a>
+                    <h3>{{token.note}}</h3>
                 </div>
+                {% endfor %}
             </div>
-        </section>
-
+        </div>
+    </section>
+    {% elif type == "buy" %}
+    <section>
+        <div class="card bear bear6">
+            <h2>Success!</h2>
+            <p>You paid <a href="/user/{{ event.token.owner.transactions[0]['user_from_username'] }}">{{ event.token.owner.transactions[0]['user_from_nickname'] }}</a> <b>{{event.token.owner.transactions[1]['amount']}} LBC</b> for<br><a href="/token/{{ event.token_id }}">{{ event.db.tokens[event.token_id].note }}</a>.</p>
+            <a href="/wallet">
+                <button class="card-button">Back to Wallet</button>
+            </a>
+        </div>
+    </section>
+    <section>
+        <div class="card">
+            <h2>Tokens</h2>
+            <p>You own {{ event.token.owner.tokens | length }} Lute Bear Coin NFT!</p>
+            <div class="grid-container">
+                {% for if,token in event.token.owner.tokens.items() %}
+                <div class="grid-item">
+                    <a href="/token/{{token.id}}">
+                        {% if token.for_sale %}<img class="for-sale" src="/static/forsale.png">{% endif %}
+                        <img src="{{token.url}}">
+                    </a>
+                    <h3>{{token.note}}</h3>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% elif type == "list" %}
+    <section>
+        <div class="card bear bear12">
+            <h2>Success!</h2>
+            <p>You listed this NFT for sale for <b>{{event.amount}} LBC</b><br><a href="/token/{{ event.token.id }}">{{event.token.note}}</a></p>
+            <a href="/wallet">
+                <button class="card-button">Back to Wallet</button>
+            </a>
+        </div>
+    </section>
+    <section>
+        <div class="card">
+            <h2>Tokens</h2>
+            <p>You own {{ event.token.owner.tokens | length }} Lute Bear Coin NFT!</p>
+            <div class="grid-container">
+                {% for if,token in event.token.owner.tokens.items() %}
+                <div class="grid-item">
+                    <a href="/token/{{token.id}}">
+                        {% if token.for_sale %}<img class="for-sale" src="/static/forsale.png">{% endif %}
+                        <img src="{{token.url}}">
+                    </a>
+                    <h3>{{token.note}}</h3>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% elif type == "unlist" %}
+    <section>
+        <div class="card bear bear13">
+            <h2>Success!</h2>
+            <p>Your NFT is no longer for sale<br><a href="/token/{{ event.token.id }}">{{event.token.note}}</a></p>
+            <a href="/wallet">
+                <button class="card-button">Back to Wallet</button>
+            </a>
+        </div>
+    </section>
+    <section>
+        <div class="card">
+            <h2>Tokens</h2>
+            <p>You own {{ event.token.owner.tokens | length }} Lute Bear Coin NFT!</p>
+            <div class="grid-container">
+                {% for if,token in event.token.owner.tokens.items() %}
+                <div class="grid-item">
+                    <a href="/token/{{token.id}}">
+                        {% if token.for_sale %}<img class="for-sale" src="/static/forsale.png">{% endif %}
+                        <img src="{{token.url}}">
+                    </a>
+                    <h3>{{token.note}}</h3>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
     {% endif %}
-
 
 </body>

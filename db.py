@@ -15,30 +15,30 @@ class Database:
         self.users = self.load_data(self.workbook, 'users', User)
         self.tokens = self.load_data(self.workbook, 'tokens', Token)
         self.transactions = self.load_data(self.workbook, 'transactions', Transaction)
+        self.listings = self.load_data(self.workbook, 'listings', Listing)
 
-    def write_transaction(self, user_from, user_to, amount=0, token=None ):
+    def write_transaction(self, user_from, user_to, amount=0, token=None):
         worksheet=self.workbook['transactions']
+        worksheet.append([
+            max(self.transactions.keys())+1,
+            datetime.datetime.now().isoformat(),
+            user_from,
+            user_to,
+            amount,
+            token
+        ])
+        self.workbook.save(self.path)
+        self.load_db()
 
-        if token:
-            worksheet.append([
-                max(self.transactions.keys())+1,
-                datetime.datetime.now().isoformat(),
-                user_from,
-                user_to,
-                None,
-                int(token)
-            ])
-
-        else:
-            worksheet.append([
-                max(self.transactions.keys())+1,
-                datetime.datetime.now().isoformat(),
-                user_from,
-                user_to,
-                int(amount),
-                None
-            ])
-
+    def write_listing(self, seller_id, token_id, amount=None):
+        worksheet=self.workbook['listings']       
+        worksheet.append([
+            max(self.listings.keys())+1,
+            datetime.datetime.now().isoformat(),
+            seller_id,
+            token_id,
+            amount,
+        ])
         self.workbook.save(self.path)
         self.load_db()
 
@@ -93,13 +93,6 @@ class Database:
                 continue
             users.append(u.username)
         return users
-
-    def generate_new_id(self):
-        from random import randint
-        s = ''
-        for i in range(16):
-            s = s + str(randint(0,9))
-        return s
     
     def transaction_list(self):
         transactions = []
@@ -107,6 +100,15 @@ class Database:
             transactions.append(t.to_dict())
         transactions.reverse()
         return transactions
+
+    def for_sale(self):
+        for_sale = {}
+        for id,listing in self.listings.items():
+            if listing.amount:
+                for_sale[listing.token.id] = listing
+            else:
+                for_sale.pop(listing.token.id)
+        return for_sale
 
 class Object:
     def __init__(self, d, db):
@@ -178,16 +180,14 @@ class User(Object):
         tokens = {}
         for id, transaction in self.db.transactions.items():
 
-            if transaction.amount:
-                continue
-
-            if getattr(transaction, 'to') is self.id:
+            if getattr(transaction, 'to') is self.id and transaction.token:
                 tokens[transaction.token] = self.db.tokens[transaction.token].to_dict()
 
-            if getattr(transaction, 'from') is self.id:
+            if getattr(transaction, 'from') is self.id and transaction.token:
                 if transaction.token in tokens:
                     tokens.pop(transaction.token)
-
+        
+        tokens = dict(reversed(tokens.items()))
         return tokens
 
     @property
@@ -196,14 +196,10 @@ class User(Object):
 
         for id, transaction in self.db.transactions.items():
 
-            if not transaction.amount:
-                continue
-
-            if getattr(transaction, 'to') is self.id:
+            if getattr(transaction, 'to') is self.id and transaction.amount:
                 balance += transaction.amount
 
-            if getattr(transaction, 'from') is self.id:
-                
+            if getattr(transaction, 'from') is self.id and transaction.amount:               
                 if getattr(transaction, 'to') == getattr(transaction, 'from') and self.id == 0:
                     continue
 
@@ -263,12 +259,27 @@ class Token(Object):
         t.reverse()
         return t
 
+    @property
+    def for_sale(self):
+        if self.id in self.db.for_sale():
+            return True
+        else:
+            return False
+
+    @property
+    def listing(self):
+        if self.for_sale:
+            return self.db.for_sale()[self.id]
+        else:
+            return None
+
     def to_dict(self):
         d = {
             'id': self.id,
             'created_at': self.created_at,
             'note': self.note,
-            'url': self.url
+            'url': self.url,
+            'for_sale': self.for_sale
         }
         return d
 
@@ -308,6 +319,16 @@ class Achievement:
     def __init__(self, name, icon):
         self.name = name
         self.icon = icon
+
+class Listing(Object):
+
+    @property
+    def seller(self):
+        return self.db.users[getattr(self, 'seller_id')]
+    
+    @property
+    def token(self):
+        return self.db.tokens[getattr(self, 'token_id')]
 
 class Session:
     def __init__(self, username):

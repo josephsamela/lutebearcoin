@@ -17,13 +17,19 @@ def home():
         user=user
     )
 
+@app.route("/about")
+def about():
+    return render_template(
+        "about.html", 
+    )
+
 @app.route("/wallet")
 def wallet():
     user = authentication_check(request)
     if not user:
         return redirect("login")
     return render_template(
-        "wallet.html", 
+        "wallet.html",
         user=user
     )
 
@@ -37,6 +43,14 @@ def leaderboard():
         users=users
     )
 
+@app.route("/market")
+def market():
+    for_sale = list(db.for_sale().values())
+    return render_template(
+        "market.html", 
+        forsale=for_sale
+    )
+
 @app.route("/user/<username>")
 def user(username):
     user = db.get_user(username)
@@ -47,11 +61,13 @@ def user(username):
 
 @app.route("/token/<token_id>")
 def token(token_id):
+    user = authentication_check(request)
     token_id = int(token_id)
     token = db.get_token(token_id)
     return render_template(
         "token.html", 
-        token=token
+        token=token,
+        user=user
     )
 
 # Login route
@@ -95,59 +111,210 @@ def transaction():
         return redirect("login")
 
     transaction_type = request.form.get("transaction_type")
-    user_to = request.form.get("to")
 
     match transaction_type:
 
-        # This route supports two types of transactions:
+        # This route supports three types of transactions:
         #   1. "lbc" = Send an amount of lbc to a recipient.
         #   2. "nft" = Send a nft to a recipient.
+        #   3. "buy" = Buy a listed item
 
         case 'lbc':
-            transaction_amount = request.form.get("amount")
+            user_to = request.form.get("to")
+            amount = request.form.get("amount")
 
-            # Validation Checks
-
-            if not int(transaction_amount):
+            if not amount.isdigit():
                 return render_template("send_lbc.html", user=user_from, users=db.user_list(user_from), error="Can only send whole number of LBC.")
 
-            if '.' in transaction_amount:
-                return render_template("send_lbc.html", user=user_from, users=db.user_list(user_from), error="Can only send whole number of LBC.")
+            amount = int(amount)
+
+            if amount < 0:
+                return render_template("send_lbc.html", user=user_from, users=db.user_list(user_from), error="Cannot send negative LBC.")
 
             if not db.get_user(user_to):
                 return render_template("send_lbc.html", user=user_from, users=db.user_list(user_from), error="Recipient does not exist.")
 
-            if int(transaction_amount) > user_from.balance:
+            if amount > user_from.balance:
                 return render_template("send_lbc.html", user=user_from, users=db.user_list(user_from), error="Insufficient balance")
 
             db.write_transaction(
                 user_from=user_from.id,
                 user_to=db.get_user(user_to).id,
-                amount=int(transaction_amount)
+                amount=amount
             )
 
-            return make_response(redirect('success'))
+            return render_template("success.html", event=db.transactions[max(db.transactions.keys())], type="lbc")
 
         case 'nft':
+            user_to = request.form.get("to")
+            token_id = request.form.get("token")
 
-            transaction_token = request.form.get("token")
+            if not token_id.isdigit():
+                return render_template("send_nft.html", user=user_from, users=db.user_list(user_from), error="Invalid token.")
+            
+            token_id = int(token_id)
+
+            if not token_id in db.tokens:
+                return render_template("send_nft.html", user=user_from, users=db.user_list(user_from), error="Token does not exist.")
+            
+            token = db.get_token(token_id)
 
             if not db.get_user(user_to):
-                return render_template("send_nft.html", user=user_from, users=db.user_list(user), error="Recipient does not exist.")
+                return render_template("send_nft.html", user=user_from, users=db.user_list(user_from), error="Recipient does not exist.")
 
-            if not int(transaction_token):
-                return render_template("send_nft.html", user=user_from, users=db.user_list(user), error="You can only send Tokens you own.")
+            if db.get_user(user_to).id == token.owner.id:
+                return render_template("send_nft.html", user=user_from, users=db.user_list(user_from), error="You can't send tokens to yourself.")
 
-            if not int(transaction_token) in user_from.tokens:
-                return render_template("send_nft.html", user=user_from, users=db.user_list(user), error="You can only send Tokens you own.")
+            if not token.id in user_from.tokens:
+                return render_template("send_nft.html", user=user_from, users=db.user_list(user_from), error="You can only send Tokens you own.")
+            
+            if token.for_sale:
+                return render_template("send_nft.html", user=user_from, users=db.user_list(user_from), error="You can't send a token listed for sale.")
 
             db.write_transaction(
                 user_from=user_from.id,
                 user_to=db.get_user(user_to).id,
-                token=transaction_token
+                token=token.id
             )
 
-            return make_response(redirect('success'))
+            return render_template("success.html", event=db.transactions[max(db.transactions.keys())], type="nft")
+
+        case 'buy':
+
+            token_id = request.form.get("token_id")
+
+            # Check token id is in correct format
+            if not token_id.isdigit():
+                return render_template("purchase.html", token=token, error="Invalid token.")
+
+            token_id = int(token_id)
+
+            # Check token exists
+            if not token_id in db.tokens:
+                return render_template("purchase.html", token=token, error="Token does not exist.")
+
+            token = db.get_token(token_id)
+
+            # Check token is for sale
+            if not token.for_sale:
+                return render_template("purchase.html", token=token, error="Token is not for sale.")
+            
+            # Check buyer doesn't already own this item
+            if token.id in user_from.tokens:
+                return render_template("purchase.html", token=token, error="You already own this item.")
+
+            # Check buyer has sufficient balance
+            if user_from.balance < token.listing.amount:
+                return render_template("purchase.html", token=token, error="Insufficient balance.")
+            
+            # Check it's not being purchased for a negative amount
+            if token.listing.amount < 0:
+                return render_template("purchase.html", token=token, error="Negative purchase amount.")
+
+            # Send LBC from buyer to seller
+            db.write_transaction(
+                user_from=user_from.id,
+                user_to=token.owner.id,
+                token=None,
+                amount=token.listing.amount
+            )
+
+            # Send NFT from seller to buyer
+            db.write_transaction(
+                user_from=token.owner.id,
+                user_to=user_from.id,
+                token=token.id,
+                amount=None
+            )
+
+            # System removes for sale listing
+            db.write_listing(
+                seller_id=0,
+                token_id=token.id,
+                amount=None
+            )
+
+            return render_template("success.html", event=db.listings[max(db.listings.keys())], type="buy")
+
+        case 'list':
+
+            token_id = request.form.get("token_id")
+            amount = request.form.get("amount")
+
+            # Check token id is in correct format
+            if not token_id.isdigit():
+                return render_template("sell.html", token=token, error="Invalid token.")
+            
+            # Check amount is in correct format
+            if not token_id.isdigit():
+                return render_template("sell.html", token=token, error="Can only list in whole LBC.")
+
+            token_id = int(token_id)
+            amount = int(amount)
+
+            # Check list amount is positive
+            if amount < 0:
+                return render_template("sell.html", token=token, error="Can't list for negative LBC.")
+
+            # Check list amount doesn't exceed total amount of lbc
+            if amount > 100000000:
+                return render_template("sell.html", token=token, error="Must list for less than 100M LBC.")
+
+            # Check token exists
+            if not token_id in db.tokens:
+                return render_template("sell.html", token=token, error="Token does not exist.")
+
+            token = db.get_token(token_id)
+
+            # Check token is not already for sale
+            if token.for_sale:
+                return render_template("sell.html", token=token, error="Token is already for sale.")
+            
+            # Check seller owns this item
+            if not token.id in user_from.tokens:
+                return render_template("sell.html", token=token, error="You don't own this item.")
+
+            # Create Listing
+            db.write_listing(
+                seller_id=user_from.id,
+                token_id=token.id,
+                amount=amount
+            )
+
+            return render_template("success.html", event=db.listings[max(db.listings.keys())], type="list")
+        
+        case 'unlist':
+
+            token_id = request.form.get("token_id")
+
+            # Check token id is in correct format
+            if not token_id.isdigit():
+                return render_template("unlist.html", token=token, error="Invalid token.")
+            
+            token_id = int(token_id)
+
+            # Check token exists
+            if not token_id in db.tokens:
+                return render_template("unlist.html", token=token, error="Token does not exist.")
+
+            token = db.get_token(token_id)
+
+            # Check token isn't not listed for sale
+            if not token.for_sale:
+                return render_template("unlist.html", token=token, error="Token is not listed for sale.")
+            
+            # Check seller owns this item
+            if not token.id in user_from.tokens:
+                return render_template("unlist.html", token=token, error="You don't own this item.")
+
+            # Create Listing
+            db.write_listing(
+                seller_id=user_from.id,
+                token_id=token.id,
+                amount=None
+            )
+
+            return render_template("success.html", event=db.listings[max(db.listings.keys())], type="unlist")
 
         case _:
             return redirect("wallet")
@@ -157,7 +324,6 @@ def send_lbc():
     user = authentication_check(request)
     if not user:
         return redirect("login")
-
     return render_template("send_lbc.html", user=user, users=db.user_list(user))
 
 @app.route("/send_nft")
@@ -165,8 +331,61 @@ def send_nft():
     user = authentication_check(request)
     if not user:
         return redirect("login")
-
     return render_template("send_nft.html", user=user, users=db.user_list(user))
+
+@app.route("/sell", methods=["POST"])
+def sell():
+    user = authentication_check(request)
+    if not user:
+        return redirect("login")
+
+    token_id = request.form.get("token_id")
+    if not token_id or not token_id.isdigit():
+        return redirect("login")
+
+    token = db.get_token(int(token_id))
+
+    return render_template(
+        "sell.html",
+        token=token
+    )
+
+@app.route("/unlist", methods=["POST"])
+def unlist():
+    user = authentication_check(request)
+    if not user:
+        return redirect("login")
+
+    token_id = request.form.get("token_id")
+    if not token_id or not token_id.isdigit():
+        return redirect("login")
+
+    token = db.get_token(int(token_id))
+
+    return render_template(
+        "unlist.html",
+        token=token
+    )
+
+@app.route("/purchase", methods=["POST"])
+def purchase():
+    user = authentication_check(request)
+    if not user:
+        return redirect("login")
+
+    token_id = request.form.get("token_id")
+    if not token_id or not token_id.isdigit():
+        return redirect("login")
+
+    token = db.get_token(int(token_id))
+
+    if not token.for_sale:
+        return redirect("login")
+
+    return render_template(
+        "purchase.html", 
+        token=token
+    )
 
 @app.route("/success")
 def success():
@@ -199,12 +418,9 @@ def format_credit_date(d):
 
 @app.template_filter()
 def format_account_number(d):
-    
     account_id = ''
-
     r = 16 - len(str(d))
     d = '0'*r + str(d)
-
     c = 0
     for i in d:
         account_id += i

@@ -29,11 +29,38 @@
             <p>Owned by <a href="/user/{{token.owner.username}}">{{ token.owner.nickname }}</a></p>
             <div class="grid-container">
                 <div class="grid-item">
+                    {% if token.for_sale %}<img class="for-sale" src="/static/forsale.png">{% endif %}
                     <img src="{{token.url}}">
                 </div>
             </div>
         </div>
     </section>
+
+    {% if token.for_sale %}
+    {% if user.id == token.owner.id %}
+    <section>
+        <div class="card bear bear11">
+            <h2>For Sale</h2>
+            <p>You listed this token for sale for <b>{{ token.listing.amount }} LBC</b>.</p>
+            <form action="/unlist" method="post">
+                <input type="hidden" name="token_id" value="{{ token.id }}"/>
+                <button class="card-button" type="submit">Remove Listing</button>
+            </form>
+        </div>
+    </section>
+    {% else %}
+    <section>
+        <div class="card bear bear11">
+            <h2>For Sale</h2>
+            <p>This token is listed for sale!<br>Sold by <a href="/user/{{token.owner.username}}">{{ token.owner.nickname }}</a>. Price <b>{{ token.listing.amount }} LBC</b>.</p>
+            <form action="/purchase" method="post">
+                <input type="hidden" name="token_id" value="{{ token.id }}"/>
+                <button class="card-button" type="submit">Purchase</button>
+            </form>
+        </div>
+    </section>
+    {% endif %}
+    {% endif %}
 
     <section>
         <div class="card">
@@ -70,6 +97,24 @@
         </div>
     </section>
 
+    {% if user.id == token.owner.id and not token.for_sale %}      
+        <section>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <a href="/send_nft">
+                        <button>Send NFT</button>
+                    </a>
+                </div>
+                <div class="grid-item">
+                    <form action="/sell" method="post">
+                        <input type="hidden" name="token_id" value="{{ token.id }}"/>
+                        <button type="submit">Sell NFT</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+    
     <section>
         <div class="grid-container">
             <a href="/wallet" class="grid-item">

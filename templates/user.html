@@ -16,14 +16,14 @@
 </head>
 
 <body>
-    <!-- Banner -->
     <section>
         <a href="/">
             <h1>Lute Bear Coin</h1>
+        </a>
+        <a href="/wallet">
             <img class="logo" src="/static/logo.png">
         </a>
     </section>
-
     {% if user.id == 0 %}
     <section>
         <div class="card bear bear9">
@@ -54,11 +54,12 @@
     <section>
         <div class="card">
             <h2>Tokens</h2>
-            <p>{{ user.nickname }} owns {{ user.tokens | length }} Lute Bear Coin NFTs!</p>
+            <p>{{ user.nickname }} owns {{ user.tokens | length }} Lute Bear Coin NFT!</p>
             <div class="grid-container">
                 {% for token in user.tokens %}
                 <div class="grid-item">
                     <a href="/token/{{user.tokens[token].id}}">
+                        {% if user.tokens[token].for_sale %}<img class="for-sale" src="/static/forsale.png">{% endif %}
                         <img src="{{user.tokens[token].url}}">
                     </a>
                     <h3>{{user.tokens[token].note}}</h3>

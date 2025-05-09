@@ -95,7 +95,11 @@ input, select {
 
 img {
     max-width: 100%;
-    border-radius: 12px;
+}
+
+.for-sale {
+    position: absolute;
+    width: 50px;
 }
 
 label {
@@ -136,6 +140,15 @@ button {
     padding: 12px;
     border-radius: 12px;
     text-align: center;
+    position: relative;
+}
+
+.card-button {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    left: 12px;
+    width: auto;
 }
 
 p {
@@ -249,4 +262,16 @@ a {
 }
 .bear10 {
     background-image:url(bear10.png);
+}
+.bear11 {
+    background-image:url(bear11.png);
+}
+.bear12 {
+    background-image:url(bear12.png);
+}
+.bear13 {
+    background-image:url(bear13.png);
+}
+.bear14 {
+    background-image:url(bear14.png);
 }

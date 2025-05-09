@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Transaction</title>
+    <title>Wallet</title>
     <link rel="icon" type="image/x-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,7 +14,6 @@
     <link rel="stylesheet" type="text/css" href="static/style.css">
     <meta name="format-detection" content="telephone=no">
 </head>
-
 <body>
     <section>
         <a href="/">
@@ -26,39 +25,36 @@
     </section>
     <section>
         <div class="card">
-            <h2>Transaction</h2>
-            <p>You're about to <b>send</b> LBC!</p>
-
-            <form action="transaction" method="post">
-                <div class="card">
-                     <h3>Recipient</h3>
-
-                    <select type="string" name="to" required>
-                        <option></option>
-                        {% for username in users %}
-                        <option value="{{username}}">{{username}}</option>
-                        {% endfor %}
-                    </select>
-                    
-                    <h3>Amount</h3>
-                    <input type="number" name="amount" required />
-                    
-                    <br><br>
-                    <input type="hidden" name="transaction_type" value="lbc"/>
-                    <button type="submit">Submit</button>
-                </div>    
-            </form>
-            {% if error %}
-                <p class="error">{{ error }}</p>
-            {% endif %}
+            <h2>Market</h2>
+            <p>Folks list items for here for sale in the <b>market</b>! Browse the items available for purchase!</p>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <img src="/static/forsale.png">
+                </div>
+                <div class="grid-item">
+                    <img src="/static/forsale.png">
+                </div>
+            </div>
+            <br>
+            <p>Items available for purchase have a for sale tag.</p>
         </div>
     </section>
-
     <section>
         <div class="card">
-            <h2>Balance</h2>
-            <h4>{{ user.balance }}</h4>
-            <p>You own {{ user.balance }} Lute Bear Coin!</p>
+            <h2>For Sale</h2>
+            <p>There are {{ forsale | length }} items for sale!</p>
+            <div class="grid-container">
+                {% for listing in forsale%}
+                <div class="grid-item">
+                    <p>Price <b>{{ listing.amount }} LBC</b></p>
+                    <a href="/token/{{listing.token.id}}">
+                        <img class="for-sale" src="/static/forsale.png">
+                        <img src="{{listing.token.url}}">
+                    </a>
+                    <h3>{{listing.token.note}}</h3>
+                </div>
+                {% endfor %}
+            </div>
         </div>
     </section>
 
@@ -69,5 +65,4 @@
             </a>
         </div>
     </section>
-
 </body>
