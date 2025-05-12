@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Tokens</title>
+    <link rel="icon" type="image/x-icon" href="/static/logo.png">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Lute Bear Coin">
+    <link rel="apple-touch-icon" href="/static/logo.png">
+    <meta name="theme-color" content="#4a1a19">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <meta name="format-detection" content="telephone=no">
+</head>
+
+<body>
+    <section>
+        <a href="/">
+            <h1>Lute Bear Coin</h1>
+        </a>
+        <a href="/wallet">
+            <img class="logo" src="/static/logo.png">
+        </a>
+    </section>
+    {% if user.id == 0 %}
+    <section>
+        <div class="card bear bear9">
+            <h2>System</h2>
+            <p>The system account is run by the mysterious group known as the <b>Lute Bear Council</b>.<br>They administer the network and run events.</p>
+        </div>
+    </section>
+    {% else %}
+    <section>
+        <div class="credit-card">
+            <img class="card-award-icon" src="/static/{{ user.awards[0].icon }}">
+            <p class="card-award-text">{{ user.awards[0].name }}</p>
+            <p class="card-text">{{ user.id | format_account_number }}</p>
+            <span class="card-subtext spanleft">{{ user.nickname }} {{ user.created_at | format_credit_date }}</span><span class="card-subtext spanright">{{ user.balance }} LBC • {{ user.tokens | length }} NFT</span>
+        </div>
+    </section>
+    <section>
+        <div class="card">
+            <h2>Tokens</h2>
+            <p><a href="/user/{{user.username}}">{{ user.nickname }}</a> owns <b>{{ user.tokens | length }}</b> Lute Bear Coin NFT!</p>
+            <div class="grid-container">
+                {% for token in user.tokens %}
+                <div class="grid-item">
+                    <a href="/token/{{user.tokens[token].id}}">
+                        {% if user.tokens[token].for_sale %}<img class="for-sale" src="/static/forsale.png">{% endif %}
+                        <img src="{{user.tokens[token].url}}">
+                    </a>
+                    <h3>{{user.tokens[token].note}}</h3>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+    <section>
+        <div class="grid-container">
+            <a href="/wallet" class="grid-item">
+                <button>Back to Wallet</button>
+            </a>
+        </div>
+    </section> 
+</body>

@@ -55,25 +55,32 @@
     <section>
         <div class="card">
             <h2>Tokens</h2>
-            <p>You own {{ user.tokens | length }} Lute Bear Coin NFT!</p>
+            <p>You own <b>{{ user.tokens | length }}</b> Lute Bear Coin NFT!</p>
             <div class="grid-container">
-                {% for token in user.tokens %}
+                {% for token in tokens[0:6] %}
                 <div class="grid-item">
-                    <a href="/token/{{user.tokens[token].id}}">
-                        {% if user.tokens[token].for_sale %}<img class="for-sale" src="/static/forsale.png">{% endif %}
-                        <img src="{{user.tokens[token].url}}">
+                    <a href="/token/{{token.id}}">
+                        {% if token.for_sale %}<img class="for-sale" src="/static/forsale.png">{% endif %}
+                        <img src="{{token.url}}">
                     </a>
-                    <h3>{{user.tokens[token].note}}</h3>
+                    <h3>{{token.note}}</h3>
                 </div>
                 {% endfor %}
             </div>
+            {% if user.tokens | length > 6  %}
+            <p>Showing your last 6 NFT.</p>
+            <br>
+            <a href="/user/{{ user.username }}/tokens">
+                <button>All Tokens</button>
+            </a>
+            {% endif %}
         </div>
     </section>
 
     <section>
         <div class="card">
             <h2>Transaction History</h2>
-            <p>You're part of {{ user.transactions | length }} Lute Bear Coin transactions!</p>
+            <p>You're part of <b>{{ user.transactions | length }}</b> transactions!</p>
             <table>
                 <tr>
                     <th>ID</th>
@@ -105,7 +112,7 @@
             {% if user.transactions | length > 10  %}
             <p>Showing your last 10 transactions.</p>
             <br>
-            <a href="/transactions">
+            <a href="/user/{{ user.username }}/transactions">
                 <button>All Transactions</button>
             </a>
             {% endif %}

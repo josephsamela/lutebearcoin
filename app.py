@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, make_response, json
 
 import datetime
 import pytz
+import git
 
 from db import Database
 db = Database('db.xlsx')
@@ -28,8 +29,10 @@ def wallet():
     user = authentication_check(request)
     if not user:
         return redirect("login")
+    tokens = list(user.tokens.values())
     return render_template(
         "wallet.html",
+        tokens=tokens,
         user=user
     )
 
@@ -54,8 +57,26 @@ def market():
 @app.route("/user/<username>")
 def user(username):
     user = db.get_user(username)
+    tokens = list(user.tokens.values())
     return render_template(
         "user.html", 
+        user=user,
+        tokens=tokens
+    )
+
+@app.route("/user/<username>/transactions")
+def user_transactions(username):
+    user = db.get_user(username)
+    return render_template(
+        "user_transactions.html",
+        user=user
+    )
+
+@app.route("/user/<username>/tokens")
+def user_tokens(username):
+    user = db.get_user(username)
+    return render_template(
+        "user_tokens.html",
         user=user
     )
 
@@ -95,11 +116,11 @@ def logout():
     db.end_session(user.username)
     return redirect("/")
 
-@app.route("/transactions")
-def transactions():
+@app.route("/ledger")
+def ledger():
     user = authentication_check(request)
     return render_template(
-        "transactions.html",
+        "ledger.html",
         transactions=db.transaction_list()
     )
 
@@ -397,6 +418,12 @@ def success():
         "success.html", 
         user=user
     )
+
+@app.route("/version")
+def version():
+    repo = git.Repo(search_parent_directories=True)
+    sha = repo.head.object.hexsha
+    return sha
 
 def authentication_check(request):
     # Check if browser session exists.

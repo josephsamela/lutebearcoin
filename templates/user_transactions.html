@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>User | {{ user.nickname }}</title>
+    <title>Transactions</title>
     <link rel="icon" type="image/x-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -41,48 +41,10 @@
         </div>
     </section>
     {% endif %}
-
-    {% if not user.id == 0 %}    
-    <section>
-        <div class="card">
-            <h2>Balance</h2>
-            <h4>{{ user.balance }}</h4>
-            <p>{{ user.nickname }} owns {{ user.balance }} Lute Bear Coin!</p>
-        </div>
-    </section>
-    {% endif %}
-
-    {% if not user.id == 0 %}
-    <section>
-        <div class="card">
-            <h2>Tokens</h2>
-            <p><a href="/user/{{user.username}}">{{ user.nickname }}</a> owns <b>{{ user.tokens | length }}</b> Lute Bear Coin NFT!</p>
-            <div class="grid-container">
-                {% for token in tokens[0:6] %}
-                <div class="grid-item">
-                    <a href="/token/{{token.id}}">
-                        {% if token.for_sale %}<img class="for-sale" src="/static/forsale.png">{% endif %}
-                        <img src="{{token.url}}">
-                    </a>
-                    <h3>{{token.note}}</h3>
-                </div>
-                {% endfor %}
-            </div>
-            {% if user.tokens | length > 6  %}
-            <p>Showing the last 6 tokens.</p>
-            <br>
-            <a href="/user/{{ user.username }}/tokens">
-                <button>All Tokens</button>
-            </a>
-            {% endif %}
-        </div>
-    </section>
-    {% endif %}
-
     <section>
         <div class="card">
             <h2>Transaction History</h2>
-            <p><a href="/user/{{user.nickname}}">{{ user.nickname }}</a> is part of <b>{{ user.transactions | length }}</b> transactions!</p>
+            <p><a href="/user/{{ user.username }}">{{ user.nickname }}</a> is part of <b>{{ user.transactions | length }}</b> transactions!</p>
             <table>
                 <tr>
                     <th>ID</th>
@@ -91,7 +53,7 @@
                     <th>To</th>
                     <th>Sent</th>
                 </tr>
-                {% for transaction in user.transactions[0:10] %}
+                {% for transaction in user.transactions %}
                 {% if transaction.amount %}
                 <tr>
                     <td>{{transaction.id}}</td>
@@ -111,22 +73,13 @@
                 {% endif %}
                 {% endfor %}
             </table>
-            {% if user.transactions | length > 10  %}
-            <p>Showing the last 10 transactions.</p>
-            <br>
-            <a href="/user/{{ user.username }}/transactions">
-                <button>All Transactions</button>
-            </a>
-            {% endif %}
         </div>
     </section>
-    
     <section>
         <div class="grid-container">
             <a href="/wallet" class="grid-item">
                 <button>Back to Wallet</button>
             </a>
         </div>
-    </section>
-
+    </section> 
 </body>

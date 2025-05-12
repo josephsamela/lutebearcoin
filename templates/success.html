@@ -28,7 +28,7 @@
     <section>
         <div class="card bear bear7">
             <h2>Success!</h2>
-            <p>You just sent <a href="/user/{{ event.user_to.username }}">{{ event.user_to.nickname }}</a> {{ event.amount }} LBC.</p>
+            <p>You just sent <a href="/user/{{ event.user_to.username }}">{{ event.user_to.nickname }}</a> <b>{{ event.amount }} LBC</b>.</p>
             <a href="/wallet">
                 <button class="card-button">Back to Wallet</button>
             </a>
@@ -38,7 +38,7 @@
         <div class="card">
             <h2>Balance</h2>
             <h4>{{ event.user_from.balance }}</h4>
-            <p>You own {{ event.user_from.balance }} Lute Bear Coin!</p>
+            <p>You own <b>{{ event.user_from.balance }}</b> Lute Bear Coin!</p>
         </div>
     </section>
     {% elif type == "nft" %}
@@ -54,7 +54,7 @@
     <section>
         <div class="card">
             <h2>Tokens</h2>
-            <p>You own {{ event.user_from.tokens | length }} Lute Bear Coin NFT!</p>
+            <p>You own <b>{{ event.user_from.tokens | length }}</b> Lute Bear Coin NFT!</p>
             <div class="grid-container">
                 {% for if,token in event.user_from.tokens.items() %}
                 <div class="grid-item">
@@ -81,7 +81,7 @@
     <section>
         <div class="card">
             <h2>Tokens</h2>
-            <p>You own {{ event.token.owner.tokens | length }} Lute Bear Coin NFT!</p>
+            <p>You own <b>{{ event.token.owner.tokens | length }}</b> Lute Bear Coin NFT!</p>
             <div class="grid-container">
                 {% for if,token in event.token.owner.tokens.items() %}
                 <div class="grid-item">
@@ -108,7 +108,7 @@
     <section>
         <div class="card">
             <h2>Tokens</h2>
-            <p>You own {{ event.token.owner.tokens | length }} Lute Bear Coin NFT!</p>
+            <p>You own <b>{{ event.token.owner.tokens | length }}</b> Lute Bear Coin NFT!</p>
             <div class="grid-container">
                 {% for if,token in event.token.owner.tokens.items() %}
                 <div class="grid-item">
@@ -135,7 +135,7 @@
     <section>
         <div class="card">
             <h2>Tokens</h2>
-            <p>You own {{ event.token.owner.tokens | length }} Lute Bear Coin NFT!</p>
+            <p>You own <b>{{ event.token.owner.tokens | length }}</b> Lute Bear Coin NFT!</p>
             <div class="grid-container">
                 {% for if,token in event.token.owner.tokens.items() %}
                 <div class="grid-item">
