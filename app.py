@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, make_response, json
 
 import datetime
 import pytz
-import git
 
 from db import Database
 db = Database('db.xlsx')
