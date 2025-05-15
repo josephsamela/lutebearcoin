@@ -42,7 +42,7 @@
     <section>
         <div class="card">
             <h2>For Sale</h2>
-            <p>There are {{ forsale | length }} items for sale!</p>
+            <p>There are <b>{{ forsale | length }}</b> items for sale!</p>
             <div class="grid-container">
                 {% for listing in forsale%}
                 <div class="grid-item">
