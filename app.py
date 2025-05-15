@@ -2,11 +2,13 @@ from flask import Flask, render_template, request, redirect, make_response, json
 
 import datetime
 import pytz
+from operator import attrgetter
 
 from db import Database
 db = Database('db.xlsx')
 
-# Initialize Flask app
+from activities.fishing import DropTable as FishingDropTable
+
 app = Flask(__name__)
 
 @app.route("/")
@@ -114,6 +116,67 @@ def logout():
     user = authentication_check(request)
     db.end_session(user.username)
     return redirect("/")
+
+@app.route("/fishing")
+def fishing():
+
+    catches = list(db.fish_catches.values())
+    catches = sorted(catches, key=attrgetter('length_in', 'weight_lbs'), reverse=True)
+
+    return render_template(
+        "fishing.html",
+        catches=catches
+    )
+
+@app.route("/fishing/catch", methods=["POST"])
+def fishing_catch():
+
+    user = authentication_check(request)
+    if not user:
+        return redirect("/login")
+
+    if not 'location' in request.form:
+        return redirect("/login")
+    location = request.form.get('location')
+
+
+    if len(user.fish_catches) > 0:
+        last_fish_ts = datetime.datetime.fromisoformat(user.fish_catches[0].timestamp)
+
+        if not last_fish_ts.date() < datetime.datetime.today().date():
+            catches = list(db.fish_catches.values())
+            catches = sorted(catches, key=attrgetter('length_in', 'weight_lbs'), reverse=True)
+
+            return render_template(
+                "fishing.html",
+                catches=catches,
+                error="You caught a fish today. Return tomorrow!"
+            )
+
+    # If user is logged in AND haven't caught a fish today, generate a new fish!
+    drop_table = FishingDropTable()
+    fish = drop_table.get_drop()
+
+    # Record the catch
+    db.write_fish_catch(
+        species=fish.species.name,
+        weight_lbs=fish.weight_lbs,
+        length_in=fish.length_in,
+        angler_id=user.id
+    )
+
+    # Then send the LBC
+    db.write_transaction(
+        user_from=0,
+        user_to=user.id,
+        amount=fish.species.value_lbc
+    )
+
+    return render_template(
+        "catch.html",
+        fish=fish,
+        user=user
+    )
 
 @app.route("/ledger")
 def ledger():
@@ -418,12 +481,6 @@ def success():
         user=user
     )
 
-@app.route("/version")
-def version():
-    repo = git.Repo(search_parent_directories=True)
-    sha = repo.head.object.hexsha
-    return sha
-
 def authentication_check(request):
     # Check if browser session exists.
     session = request.cookies.get('session')
@@ -455,6 +512,18 @@ def format_account_number(d):
             account_id += ' '
             c = 0
     return account_id
+
+@app.template_filter()
+def format_fish_weight(d):
+    lb = int(d) # Number of whole lbs
+    oz = int(   # Number of whole oz
+        (d % 1) * 16
+    )
+    return f'{lb} lbs {oz} oz'
+
+@app.template_filter()
+def format_fish_length(d):
+    return f'{round(d,1)} in'
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5001)

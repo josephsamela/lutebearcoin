@@ -93,6 +93,10 @@ input, select {
     object-fit: cover;
 }
 
+.grid-item .fish-icon {
+    aspect-ratio: auto;
+}
+
 img {
     max-width: 100%;
 }
@@ -154,6 +158,11 @@ button {
 p {
     margin: 10px 0px 0px 0px;
     font-size: 14px;
+}
+
+.fish-text {
+    margin-top: 0px;
+    font-size: 12px;
 }
 
 a {
@@ -281,3 +290,17 @@ a {
 .bear16 {
     background-image:url(bear16.png);
 }
+.bear17 {
+    background-image:url(bear17.png);
+}
+.bear18 {
+    background-image:url(bear18.png);
+}
+.bear19 {
+    background-image:url(bear19.png);
+}
+.bear20 {
+    background-image:url(bear20.png);
+}
+
+

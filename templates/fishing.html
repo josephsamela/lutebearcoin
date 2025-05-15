@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Fishing</title>
+    <link rel="icon" type="image/x-icon" href="/static/logo.png">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Lute Bear Coin">
+    <link rel="apple-touch-icon" href="/static/logo.png">
+    <meta name="theme-color" content="#4a1a19">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <meta name="format-detection" content="telephone=no">
+</head>
+<body>
+
+    <section>
+        <a href="/">
+            <h1>Lute Bear Coin</h1>
+        </a>
+        <a href="/wallet">
+            <img class="logo" src="/static/logo.png">
+        </a>
+    </section>
+
+    <section>
+        <div class="card bear bear18">
+            <h2>River</h2>
+            {% if error %}
+            <p>Welcome to the <b>river</b>!<br><span class="error">{{ error }}</span></p>
+            {% else %}
+            <p>Welcome to the <b>river</b>!<br>Bears will buy your fish for Lute Bear Coin!</p>
+            {% endif %}
+            <form action="/fishing/catch" method="post">
+                <input type="hidden" name="location" value="river"/>
+                <button class="card-button" type="submit">Go Fishing</button>
+            </form>
+        </div>
+    </section>
+
+    <section>
+        <div class="card">
+            <h2>Species</h2>
+            <p>The <b>river</b> contains four species of salmon!</p>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <img src="/static/salmon_pink.png" class="fish-icon">
+                    <h2>Pink Salmon</h2>
+                    <p class="fish-text"><b>Common</b> • Value <b>1 LBC</b></p>
+                </div>
+                <div class="grid-item">
+                    <img src="/static/salmon_coho.png" class="fish-icon">
+                    <h2>Coho Salmon</h2>
+                    <p class="fish-text"><b>Uncommon</b> • Value <b>2 LBC</b></p>
+                </div>
+                <div class="grid-item">
+                    <img src="/static/salmon_sockeye.png" class="fish-icon">
+                    <h2>Sockeye Salmon</h2>
+                    <p class="fish-text"><b>Rare</b> • Value <b>3 LBC</b></p>
+                </div>
+                <div class="grid-item">
+                    <img src="/static/salmon_chinook.png" class="fish-icon">
+                    <h2>Chinook Salmon</h2>
+                    <p class="fish-text"><b>Epic</b> • Value <b>5 LBC</b></p>
+                </div>
+            </div>
+            <p>To ensure a sustainable fish population <br>anglers may only catch <b>one fish per day</b>.</p>
+        </div>
+    </section>
+    <section>
+        <div class="card">
+            <h2>Biggest Fish</h2>
+            <p>Anglers have caught <b>{{ catches | length }}</b> fish!</p>
+            <table>
+                <tr>
+                    <th>Angler</th>
+                    <th>Species</th>
+                    <th>Weight</th>
+                    <th>Length</th>
+                    <!-- <th>Date</th> -->
+                </tr>
+                {% for catch in catches[0:10] %}
+                <tr>
+                    <td><a href="/user/{{ catch.db.users[catch.angler].username }}"></a>{{ catch.db.users[catch.angler].nickname }}</td>
+                    <td>{{ catch.species }}</td>
+                    <td>{{ catch.weight_lbs | format_fish_weight }}</td>
+                    <td>{{ catch.length_in | format_fish_length }}</td>
+                    <!-- <td>{{ catch.timestamp | format_date}}</td> -->
+                </tr>
+                {% endfor %}
+            </table>
+            <p>These are the 10 longest fish ever caught!</p>
+        </div>
+    </section>
+    <section>
+        <div class="grid-container">
+            <a href="/wallet" class="grid-item">
+                <button>Back to Wallet</button>
+            </a>
+        </div>
+    </section>
+</body>

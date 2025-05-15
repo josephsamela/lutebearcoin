@@ -16,6 +16,7 @@ class Database:
         self.tokens = self.load_data(self.workbook, 'tokens', Token)
         self.transactions = self.load_data(self.workbook, 'transactions', Transaction)
         self.listings = self.load_data(self.workbook, 'listings', Listing)
+        self.fish_catches = self.load_data(self.workbook, 'fish_catches', FishCatches)
 
     def write_transaction(self, user_from, user_to, amount=0, token=None):
         worksheet=self.workbook['transactions']
@@ -38,6 +39,19 @@ class Database:
             seller_id,
             token_id,
             amount,
+        ])
+        self.workbook.save(self.path)
+        self.load_db()
+
+    def write_fish_catch(self, species, weight_lbs, length_in, angler_id):
+        worksheet=self.workbook['fish_catches']       
+        worksheet.append([
+            max(self.fish_catches.keys() or [0])+1,
+            datetime.datetime.now().isoformat(),
+            species,
+            weight_lbs,
+            length_in,
+            angler_id
         ])
         self.workbook.save(self.path)
         self.load_db()
@@ -136,10 +150,6 @@ class Object:
 
         return json.dumps(d)
 
-def safe_serialize(obj):
-  default = lambda o: f"<<non-serializable: {type(o).__qualname__}>>"
-  return json.dumps(obj, default=default)
-
 class User(Object):
 
     @property
@@ -222,6 +232,16 @@ class User(Object):
         transactions.reverse()
 
         return transactions
+
+    @property
+    def fish_catches(self):
+        fish_catches = []
+        for id, fish in self.db.fish_catches.items():
+            if fish.angler == self.id:
+                fish_catches.append(fish)
+
+        fish_catches.reverse()
+        return fish_catches
 
     def to_dict(self):
         d = {
@@ -335,3 +355,6 @@ class Session:
         self.username = username
         self.expires = datetime.datetime.now() + datetime.timedelta(days=30)
         self.token = str(uuid.uuid4())
+
+class FishCatches(Object):
+    pass

@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Leaderboard</title>
+    <title>Fishing</title>
     <link rel="icon" type="image/x-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -11,10 +11,11 @@
     <meta name="theme-color" content="#4a1a19">
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="static/style.css">
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
     <meta name="format-detection" content="telephone=no">
 </head>
 <body>
+
     <section>
         <a href="/">
             <h1>Lute Bear Coin</h1>
@@ -23,36 +24,30 @@
             <img class="logo" src="/static/logo.png">
         </a>
     </section>
+
     <section>
-        <div class="card">
-            <h2>Leaderboard</h2>
-            <p>Users earn awards that appear on their profile by completing Lute Bear Coin transactions!</p>
+        <div class="card bear bear20">
+            <h2>You caught a fish!</h2>
             <div class="grid-container">
                 <div class="grid-item">
-                    <img src="/static/award1.png">
-                    <h2>Most LBC</h2>
-                </div>
-                <div class="grid-item">
-                    <img src="/static/award2.png">
-                    <h2>Most NFT</h2>
+                    <img src="/static/{{ fish.species.icon }}" class="fish-icon">
+                    <h2>{{ fish.species.name }}</h2>
+                    <p>{{ fish.weight_lbs | format_fish_weight}} • {{ fish.length_in | format_fish_length }}</p>
                 </div>
             </div>
-            <p>Users are ranked by their LBC balance.</p>
+            <a href="/fishing">
+                <button class="card-button" type="submit">Back to River</button>
+            </a>
         </div>
     </section>
 
-    {% for user in users%}
     <section>
-        <a href="/user/{{user.username}}">
-        <div class="credit-card">
-            <img class="card-award-icon" src="/static/{{ user.awards[0].icon }}">
-            <p class="card-award-text">{{ user.awards[0].name }}</p>
-            <p class="card-text">{{ user.id | format_account_number }}</p>
-            <span class="card-subtext spanleft">{{ user.nickname }} {{ user.created_at | format_credit_date }}</span><span class="card-subtext spanright">{{ user.balance }} LBC • {{ user.tokens | length }} NFT</span>
+        <div class="card">
+            <h2>Balance</h2>
+            <h4>{{ user.balance }}</h4>
+            <p>The bears paid you <b>{{ fish.species.value_lbc }}</b> LBC for your fish!</p>
         </div>
-        </a>
     </section>
-    {% endfor %}
 
     <section>
         <div class="grid-container">
