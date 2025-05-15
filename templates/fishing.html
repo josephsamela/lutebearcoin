@@ -83,7 +83,7 @@
                 </tr>
                 {% for catch in catches[0:10] %}
                 <tr>
-                    <td><a href="/user/{{ catch.db.users[catch.angler].username }}"></a>{{ catch.db.users[catch.angler].nickname }}</td>
+                    <td><a href="/user/{{ catch.db.users[catch.angler].username }}">{{ catch.db.users[catch.angler].nickname }}</a></td>
                     <td>{{ catch.species }}</td>
                     <td>{{ catch.weight_lbs | format_fish_weight }}</td>
                     <td>{{ catch.length_in | format_fish_length }}</td>
