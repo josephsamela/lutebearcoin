@@ -140,11 +140,11 @@ def fishing_catch():
         return redirect("/login")
     location = request.form.get('location')
 
-
     if len(user.fish_catches) > 0:
-        last_fish_ts = datetime.datetime.fromisoformat(user.fish_catches[0].timestamp)
+        eastern = pytz.timezone('US/Eastern')
+        last_fish_ts = datetime.datetime.fromisoformat(user.fish_catches[0].timestamp).replace(tzinfo=datetime.UTC).astimezone(eastern)
 
-        if not last_fish_ts.date() < datetime.datetime.today().date():
+        if not last_fish_ts.date() < datetime.datetime.today().astimezone(eastern).date():
             catches = list(db.fish_catches.values())
             catches = sorted(catches, key=attrgetter('length_in', 'weight_lbs'), reverse=True)
 
