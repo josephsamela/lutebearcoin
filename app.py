@@ -50,6 +50,7 @@ def leaderboard():
 @app.route("/market")
 def market():
     for_sale = list(db.for_sale().values())
+    for_sale.reverse()
     return render_template(
         "market.html", 
         forsale=for_sale
