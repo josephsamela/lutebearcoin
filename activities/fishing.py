@@ -34,11 +34,11 @@ class DropTable:
 class Fish:
     def __init__(self, species):
         self.species = species
+        self.relative_size = self._relative_size()
         self.weight_lbs = self._weight()
         self.length_in = self._length()
 
-    @property
-    def relative_size(self):
+    def _relative_size(self):
         # This property represents the "size" of the
         # fish relative to its maximum possible size.
         w = random.gauss(
