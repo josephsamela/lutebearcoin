@@ -2,12 +2,11 @@ from flask import Flask, render_template, request, redirect, make_response, json
 
 import datetime
 import pytz
-from operator import attrgetter
 
 from db import Database
 db = Database('db.xlsx')
 
-from activities.fishing import DropTable as FishingDropTable
+from activities.fishing import Fishing
 
 app = Flask(__name__)
 
@@ -120,50 +119,65 @@ def logout():
 
 @app.route("/fishing")
 def fishing():
-
-    catches = list(db.fish_catches.values())
-    catches = sorted(catches, key=attrgetter('length_in', 'weight_lbs'), reverse=True)
-
     return render_template(
         "fishing.html",
-        catches=catches
     )
 
-@app.route("/fishing/catch", methods=["POST"])
-def fishing_catch():
+@app.route("/fishing/<location>")
+def fishing_location(location):
 
     user = authentication_check(request)
     if not user:
         return redirect("/login")
 
-    if not 'location' in request.form:
+    fishing = Fishing(db)
+
+    # If requested location doesn't exist
+    if not hasattr(fishing, location):
+        return render_template(
+            "fishing.html"
+        )
+
+    # Otherwise render the location!
+    return render_template(
+        "fishing_location.html",
+        location=getattr(fishing, location),
+        user=user
+    )
+
+@app.route("/fishing/<location>/catch")
+def fishing_catch(location):
+
+    user = authentication_check(request)
+    if not user:
         return redirect("/login")
-    location = request.form.get('location')
 
-    if len(user.fish_catches) > 0:
-        eastern = pytz.timezone('US/Eastern')
-        last_fish_ts = datetime.datetime.fromisoformat(user.fish_catches[0].timestamp).replace(tzinfo=datetime.UTC).astimezone(eastern)
+    fishing = Fishing(db)
 
-        if not last_fish_ts.date() < datetime.datetime.today().astimezone(eastern).date():
-            catches = list(db.fish_catches.values())
-            catches = sorted(catches, key=attrgetter('length_in', 'weight_lbs'), reverse=True)
+    # If requested location doesn't exist, return an error
+    if not hasattr(fishing, location):
+        return render_template(
+            "fishing.html"
+        )
 
-            return render_template(
-                "fishing.html",
-                catches=catches,
-                error="You caught a fish today. Return tomorrow!"
-            )
+    if user.fished_today:
+        return render_template(
+            "fishing_location.html",
+            error="You caught a fish today. Return tomorrow!",
+            location=getattr(fishing, location),
+            user=user
+        )
 
     # If user is logged in AND haven't caught a fish today, generate a new fish!
-    drop_table = FishingDropTable()
-    fish = drop_table.get_drop()
+    fish = getattr(fishing, location).drop_table.get_drop()
 
     # Record the catch
     db.write_fish_catch(
         species=fish.species.name,
         weight_lbs=fish.weight_lbs,
         length_in=fish.length_in,
-        angler_id=user.id
+        angler_id=user.id,
+        location_id=location
     )
 
     # Then send the LBC
@@ -174,9 +188,24 @@ def fishing_catch():
     )
 
     return render_template(
-        "catch.html",
+        "fish_catch.html",
         fish=fish,
         user=user
+    )
+
+@app.route("/collection-log")
+def collection_log():
+
+    user = authentication_check(request)
+    if not user:
+        return redirect("/login")
+
+    fishing = Fishing(db)
+
+    return render_template(
+        "collection_log.html",
+        user=user,
+        fishing=fishing
     )
 
 @app.route("/ledger")

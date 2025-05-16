@@ -93,8 +93,13 @@ input, select {
     object-fit: cover;
 }
 
+.fish-caught {
+    filter: none !important;
+}
+
 .grid-item .fish-icon {
     aspect-ratio: auto;
+    filter: contrast(0%) brightness(50%) opacity(0.25);
 }
 
 img {
@@ -302,5 +307,22 @@ a {
 .bear20 {
     background-image:url(bear20.png);
 }
+
+
+.location_tributary_river {
+    background-image:url(location_tributary_river.png);
+}
+.location_open_ocean {
+    background-image:url(location_open_ocean.png);
+}
+.location_estuary {
+    background-image:url(location_estuary.png);
+}
+.location_coral_reef {
+    background-image:url(location_coral_reef.png);
+}
+
+
+
 
 

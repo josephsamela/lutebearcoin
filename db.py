@@ -2,6 +2,7 @@ import openpyxl
 import datetime
 import uuid
 import json
+import pytz
 
 class Database:
     def __init__(self, path):
@@ -43,7 +44,7 @@ class Database:
         self.workbook.save(self.path)
         self.load_db()
 
-    def write_fish_catch(self, species, weight_lbs, length_in, angler_id):
+    def write_fish_catch(self, species, weight_lbs, length_in, angler_id, location_id):
         worksheet=self.workbook['fish_catches']       
         worksheet.append([
             max(self.fish_catches.keys() or [0])+1,
@@ -51,7 +52,8 @@ class Database:
             species,
             weight_lbs,
             length_in,
-            angler_id
+            angler_id,
+            location_id
         ])
         self.workbook.save(self.path)
         self.load_db()
@@ -243,6 +245,47 @@ class User(Object):
         fish_catches.reverse()
         return fish_catches
 
+    @property
+    def fish_species(self):
+        # List of unique fish species user has caught
+        species = []
+        for fish in self.fish_catches:
+            if not fish.species in species:
+                species.append(fish.species)
+        return species
+
+    @property
+    def fished_today(self):
+        # Indicate if the user has caught a fish today
+        # True: The user has fished today.
+        # False: The user has not fished today.
+
+        # No catch history means user has never fished before
+        if len(self.fish_catches) is 0:
+            return False
+
+        eastern = pytz.timezone('US/Eastern')
+        last_fish_ts = datetime.datetime.fromisoformat(self.fish_catches[0].timestamp).replace(tzinfo=datetime.UTC).astimezone(eastern)
+
+        # "Yesterday" is ditermined by the calendar day.
+        if last_fish_ts.date() < datetime.datetime.today().astimezone(eastern).date():
+            return False
+        else:
+            return True
+
+    def fish_species_from_location(self, location):
+        # Return list of unique species caught at a location
+        species = []
+        for fish in self.fish_catches:
+            if fish.location_id == location.id and fish.species not in species:
+                species.append(fish.species)
+        return species
+
+    def fish_species_complete_from_location(self, location):
+        # The % of possible speices user has caught from a location
+        percent_complete = len(self.fish_species_from_location(location)) / len(location.species)
+        return int(percent_complete*100)
+
     def to_dict(self):
         d = {
             'id': self.id,
@@ -259,7 +302,7 @@ class Token(Object):
 
     @property
     def owner(self):
-        owner = None
+        owner = self.db.users[0]
         for id, transaction in self.db.transactions.items():
 
             if transaction.amount:

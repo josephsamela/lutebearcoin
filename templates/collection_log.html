@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Collection Log</title>
+    <link rel="icon" type="image/x-icon" href="/static/logo.png">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Lute Bear Coin">
+    <link rel="apple-touch-icon" href="/static/logo.png">
+    <meta name="theme-color" content="#4a1a19">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <meta name="format-detection" content="telephone=no">
+</head>
+<body>
+
+    <section>
+        <a href="/">
+            <h1>Lute Bear Coin</h1>
+        </a>
+        <a href="/wallet">
+            <img class="logo" src="/static/logo.png">
+        </a>
+    </section>
+
+    <section>
+        <div class="card">
+            <h2>Collection Log</h2>
+            <p>The <b>collection log</b> tracks how many species you've caught at each fishing location!</p>
+        </div>
+    </section>
+
+    {% for location in fishing.locations %}
+    <section>
+        <div class="card">
+            <h2>{{location.name}}</h2>
+
+            <p>You caught <b>{{ user.fish_species_from_location(location) | length }}</b> species from the <b>{{location.name}}</b>!</p>
+
+            <div class="grid-container">
+                {% for species in location.species %}
+                <div class="grid-item">
+                    {% if species.name in user.fish_species %}
+                    <img src="/static/{{species.icon}}" class="fish-icon fish-caught">
+                    {% else %}
+                    <img src="/static/{{species.icon}}" class="fish-icon">
+                    {% endif %}
+                    <h2>{{species.name}}</h2>
+                    <p class="fish-text">Value <b>{{species.value_lbc}}</b> LBC</p>
+                </div>
+                {% endfor %}
+            </div>
+            <p><b>{{ user.fish_species_complete_from_location(location) }}</b>% Complete</p>
+            <br>
+            <a href="/fishing/{{location.id}}">
+                <button>{{location.name}}</button>
+            </a>
+        </div>
+    </section>
+    {% endfor %}
+
+    <section>
+        <div class="grid-container">
+            <a href="/wallet" class="grid-item">
+                <button>Back to Wallet</button>
+            </a>
+        </div>
+    </section>
+</body>

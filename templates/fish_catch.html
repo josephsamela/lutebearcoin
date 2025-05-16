@@ -30,13 +30,13 @@
             <h2>You caught a fish!</h2>
             <div class="grid-container">
                 <div class="grid-item">
-                    <img src="/static/{{ fish.species.icon }}" class="fish-icon">
+                    <img src="/static/{{ fish.species.icon }}" class="fish-icon fish-caught">
                     <h2>{{ fish.species.name }}</h2>
                     <p>{{ fish.weight_lbs | format_fish_weight}} • {{ fish.length_in | format_fish_length }}</p>
                 </div>
             </div>
-            <a href="/fishing">
-                <button class="card-button" type="submit">Back to River</button>
+            <a href="/collection-log">
+                <button class="card-button" type="submit">Collection Log</button>
             </a>
         </div>
     </section>

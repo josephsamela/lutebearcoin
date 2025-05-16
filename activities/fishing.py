@@ -1,9 +1,31 @@
 import random
+from operator import attrgetter
+
+class Location:
+    def __init__(self, db, id, name, drop_table):
+        self.db = db
+        self.id = id
+        self.name = name
+        self.drop_table = drop_table
+
+    @property
+    def species(self):
+        return self.drop_table.drops
+    
+    @property
+    def catches(self):
+        # Return list of catches from this location
+        # Sorted by fish length. Longest -> Shortest
+        c = []
+        for id,catch in self.db.fish_catches.items():
+            if catch.location_id == self.id:
+                c.append(catch)
+        return sorted(c, key=attrgetter('length_in'), reverse=True)
 
 class DropTable:
-    def __init__(self):
-        self.drops   = [salmon_pink, salmon_coho, salmon_sockeye, salmon_chinook]
-        self.weights = [50, 30, 15, 5]
+    def __init__(self, drops, weights):
+        self.drops   = drops
+        self.weights = weights
 
     def get_drop(self):
         species = random.choices(self.drops, self.weights)[0]
@@ -50,6 +72,8 @@ class FishSpecies:
         self.icon = icon
         self.value_lbc = value_lbc
 
+# Create Species
+
 salmon_pink = FishSpecies(
     name = 'Pink Salmon',
     max_weight_lbs=15,
@@ -81,3 +105,36 @@ salmon_chinook = FishSpecies(
     icon='salmon_chinook.png',
     value_lbc=5
 )
+
+class Fishing:
+    def __init__(self, db):
+        self.db = db
+
+        # Add locations to activity!
+        self.tributary_river = Location(
+            db,
+            id='tributary_river',
+            name='Tributary River',
+            drop_table=DropTable(
+                drops = [
+                    salmon_pink, 
+                    salmon_coho, 
+                    salmon_sockeye, 
+                    salmon_chinook
+                ],
+                weights = [
+                    50, # Common
+                    30, # Uncommon
+                    15, # Rare
+                    5   # Epic
+                ]
+            )
+        )
+
+    @property
+    def locations(self):
+        l = []
+        for id,object in vars(self).items():
+            if isinstance(object, Location):
+                l.append(object)
+        return l
