@@ -39,6 +39,7 @@ h4 {
 section {
     margin: 1em auto 1em auto;
     max-width: 315px;
+    min-width: 300px;
     font-family: 'Comic Neue';
 }
 
@@ -241,10 +242,11 @@ a {
 
 .bear {
     background-position: center;
-    background-size: 315px;
+    background-size: 100%;
+    overflow: hidden;
     background-repeat: no-repeat;
-    min-height: 380px;
-    background-position-y: bottom
+    background-position-y: bottom;
+    aspect-ratio: 0.78;
 }
 
 .bear1 {
