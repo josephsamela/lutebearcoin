@@ -227,9 +227,11 @@ class User(Object):
 
             if getattr(transaction, 'to') is self.id:
                 transactions.append(transaction.to_dict())
+                continue
 
             if getattr(transaction, 'from') is self.id:
                 transactions.append(transaction.to_dict())
+                continue
 
         transactions.reverse()
 
