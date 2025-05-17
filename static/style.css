@@ -101,6 +101,7 @@ input, select {
 .grid-item .fish-icon {
     aspect-ratio: auto;
     filter: contrast(0%) brightness(50%) opacity(0.25);
+    pointer-events: none;
 }
 
 img {
@@ -310,7 +311,6 @@ a {
     background-image:url(bear20.png);
 }
 
-
 .location_tributary_river {
     background-image:url(location_tributary_river.png);
 }
@@ -323,8 +323,3 @@ a {
 .location_coral_reef {
     background-image:url(location_coral_reef.png);
 }
-
-
-
-
-
