@@ -160,7 +160,7 @@ def fishing_catch(location):
             "fishing.html"
         )
 
-    if user.fished_today:
+    if user.fished_today >= 2:
         return render_template(
             "fishing_location.html",
             error="You caught a fish today. Return tomorrow!",

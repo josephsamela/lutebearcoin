@@ -256,22 +256,22 @@ class User(Object):
 
     @property
     def fished_today(self):
-        # Indicate if the user has caught a fish today
-        # True: The user has fished today.
-        # False: The user has not fished today.
+        # Indicate the count of fish user has caught today
+        eastern = pytz.timezone('US/Eastern')
+        fish_caught_today = 0
 
         # No catch history means user has never fished before
         if len(self.fish_catches) is 0:
-            return False
+            return fish_caught_today
 
-        eastern = pytz.timezone('US/Eastern')
-        last_fish_ts = datetime.datetime.fromisoformat(self.fish_catches[0].timestamp).replace(tzinfo=datetime.UTC).astimezone(eastern)
+        for fish in self.fish_catches:
+            fish_caught_ts = datetime.datetime.fromisoformat(fish.timestamp).replace(tzinfo=datetime.UTC).astimezone(eastern)
 
-        # "Yesterday" is ditermined by the calendar day.
-        if last_fish_ts.date() < datetime.datetime.today().astimezone(eastern).date():
-            return False
-        else:
-            return True
+            # "Yesterday" is ditermined by the calendar day.
+            if not fish_caught_ts.date() < datetime.datetime.today().astimezone(eastern).date():
+                fish_caught_today += 1
+        
+        return fish_caught_today
 
     def fish_species_from_location(self, location):
         # Return list of unique species caught at a location

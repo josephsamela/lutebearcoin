@@ -72,7 +72,7 @@ class FishSpecies:
         self.icon = icon
         self.value_lbc = value_lbc
 
-# Create Species
+# Tributary River
 
 salmon_pink = FishSpecies(
     name = 'Pink Salmon',
@@ -106,6 +106,56 @@ salmon_chinook = FishSpecies(
     value_lbc=5
 )
 
+# Open Ocean
+
+arctic_grayling = FishSpecies(
+    name = 'Arctic Grayling',
+    max_length_in=30,
+    max_weight_lbs=8,
+    icon='arctic_grayling.png',
+    value_lbc=1
+)
+
+arctic_cod = FishSpecies(
+    name = 'Arctic Cod',
+    max_length_in=16,
+    max_weight_lbs=36,
+    icon='arctic_cod.png',
+    value_lbc=1
+)
+
+alaska_rockfish = FishSpecies(
+    name = 'Alaska Rockfish',
+    max_length_in=27,
+    max_weight_lbs=11,
+    icon='alaska_rockfish.png',
+    value_lbc=3
+)
+
+pacific_halibut = FishSpecies(
+    name = 'Pacific Halibut',
+    max_weight_lbs=500,
+    max_length_in=96,
+    icon='pacific_halibut.png',
+    value_lbc = 3
+)
+
+bluefin_tuna = FishSpecies(
+    name = 'Bluefin Tuna',
+    max_length_in=100,
+    max_weight_lbs=500,
+    icon='bluefin_tuna.png',
+    value_lbc=5
+)
+
+swordfish = FishSpecies(
+    name = 'Swordfish',
+    max_weight_lbs=1400,
+    max_length_in=168,
+    icon='swordfish.png',
+    value_lbc = 6
+)
+
 class Fishing:
     def __init__(self, db):
         self.db = db
@@ -130,6 +180,31 @@ class Fishing:
                 ]
             )
         )
+
+        self.open_ocean = Location(
+            db,
+            id='open_ocean',
+            name='Open Ocean',
+            drop_table=DropTable(
+                drops = [
+                    arctic_grayling, 
+                    arctic_cod, 
+                    alaska_rockfish, 
+                    pacific_halibut,
+                    bluefin_tuna,
+                    swordfish
+                ],
+                weights = [
+                    30, # Uncommon
+                    30, # Uncommon
+                    15, # Rare
+                    15, # Rare
+                    5,  # Epic
+                    1   # Epic
+                ]
+            )
+        )
+
 
     @property
     def locations(self):
