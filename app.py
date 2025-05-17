@@ -165,7 +165,7 @@ def fishing_catch(location):
     if user.fished_today >= fishing.fishing_attempts_allowed:
         return render_template(
             "fishing_location.html",
-            error="You caught a fish today. Return tomorrow!",
+            error=f"You caught {fishing.fishing_attempts_allowed} fish today. Return tomorrow!",
             location=getattr(fishing, location),
             user=user
         )
