@@ -29,7 +29,7 @@
         <div class="card">
             <h2>Choose a fishing location!</h2>
             <p>Bears love eating fish! The bears will buy<br>any fish you catch for Lute Bear Coin!</p>
-            <p>To maintain a sustainable fish population <br>anglers may only catch <b>one fish per day</b>.</p>
+            <p>To maintain a sustainable fish population <br>anglers may only catch <b>{{ fishing.fishing_attempts_allowed }} fish per day</b>.</p>
             {% if error %}
             <p class="error">{{ error }}</p>
             {% endif %}

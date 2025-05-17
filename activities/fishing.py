@@ -205,6 +205,9 @@ class Fishing:
             )
         )
 
+    @property
+    def fishing_attempts_allowed(self):
+        return len(self.locations)
 
     @property
     def locations(self):

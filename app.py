@@ -119,8 +119,10 @@ def logout():
 
 @app.route("/fishing")
 def fishing():
+    fishing = Fishing(db)
     return render_template(
         "fishing.html",
+        fishing=fishing
     )
 
 @app.route("/fishing/<location>")
@@ -160,7 +162,7 @@ def fishing_catch(location):
             "fishing.html"
         )
 
-    if user.fished_today >= 2:
+    if user.fished_today >= fishing.fishing_attempts_allowed:
         return render_template(
             "fishing_location.html",
             error="You caught a fish today. Return tomorrow!",
