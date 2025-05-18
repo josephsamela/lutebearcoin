@@ -186,7 +186,7 @@ black_sea_bass = FishSpecies(
     name = 'Black Sea Bass',
     max_weight_lbs=9,
     max_length_in=26,
-    icon='striped_bass.png',
+    icon='black_sea_bass.png',
     value_lbc = 3
 )
 
