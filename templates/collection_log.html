@@ -44,13 +44,14 @@
             <div class="grid-container">
                 {% for species in location.species %}
                 <div class="grid-item">
-                    {% if species.name in user.fish_species %}
-                    <img src="/static/{{species.icon}}" class="fish-icon fish-caught">
-                    {% else %}
-                    <img src="/static/{{species.icon}}" class="fish-icon">
-                    {% endif %}
+                    <a href="/fishing/species/{{ species.id }}">
+                        {% if species.name in user.fish_species %}
+                        <img src="/static/{{species.icon}}" class="fish-icon fish-caught">
+                        {% else %}
+                        <img src="/static/{{species.icon}}" class="fish-icon">
+                        {% endif %}
+                    </a>
                     <h2>{{species.name}}</h2>
-                    <p class="fish-text">Value <b>{{species.value_lbc}}</b> LBC</p>
                 </div>
                 {% endfor %}
             </div>

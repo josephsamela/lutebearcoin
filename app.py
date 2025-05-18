@@ -147,6 +147,27 @@ def fishing_location(location):
         user=user
     )
 
+@app.route("/fishing/species/<species>")
+def fishing_species(species):
+
+    user = authentication_check(request)
+    if not user:
+        return redirect("/login")
+
+    fishing = Fishing(db)
+
+    if not species in fishing.species:
+        return redirect('/collection-log')
+
+    species = fishing.species[species]
+
+    return render_template(
+        "fishing_species.html",
+        user=user,
+        stats=user.fish_catches_species_stats(species.name),
+        species=species
+    )
+
 @app.route("/fishing/<location>/catch")
 def fishing_catch(location):
 
@@ -216,6 +237,12 @@ def ledger():
     return render_template(
         "ledger.html",
         transactions=db.transaction_list()
+    )
+
+@app.route("/studio")
+def studio():
+    return render_template(
+        "studio.html"
     )
 
 @app.route("/transaction", methods=["POST"])
@@ -547,6 +574,9 @@ def format_account_number(d):
 
 @app.template_filter()
 def format_fish_weight(d):
+    if d == 0:
+        return '-'
+
     lb = int(d) # Number of whole lbs
     oz = int(   # Number of whole oz
         (d % 1) * 16
@@ -555,6 +585,9 @@ def format_fish_weight(d):
 
 @app.template_filter()
 def format_fish_length(d):
+    if d == 0:
+        return '-'
+
     return f'{round(d,1)} in'
 
 if __name__ == "__main__":

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{{species.name}}</title>
+    <link rel="icon" type="image/x-icon" href="/static/logo.png">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Lute Bear Coin">
+    <link rel="apple-touch-icon" href="/static/logo.png">
+    <meta name="theme-color" content="#4a1a19">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <meta name="format-detection" content="telephone=no">
+</head>
+<body>
+
+    <section>
+        <a href="/">
+            <h1>Lute Bear Coin</h1>
+        </a>
+        <a href="/wallet">
+            <img class="logo" src="/static/logo.png">
+        </a>
+    </section>
+
+    <section>
+        <div class="card">
+            <h2>{{ species.name }}</h2>
+            <p>You caught <b>{{ stats.number_caught }}</b> {{species.name}}!</p>
+
+            <div class="grid-container">
+                <div class="grid-item">
+                    {% if species.name in user.fish_species %}
+                    <img src="/static/{{species.icon}}" class="fish-icon fish-caught">
+                    {% else %}
+                    <img src="/static/{{species.icon}}" class="fish-icon">
+                    {% endif %}
+                </div>
+            </div>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <h2>Location</h2>
+                    <p><a href="/fishing/{{species.location.id}}">{{species.location.name}}</a></p>
+                </div>
+                <div class="grid-item">
+                    <h2>Value</h2>
+                    <p><b>{{species.value_lbc}}</b> LBC</p>
+                </div>
+                <div class="grid-item">
+                    <h2>Longest</h2>
+                    <p>{{ stats.length_in_longest | format_fish_length}}</p>
+                </div>
+                <div class="grid-item">
+                    <h2>Shortest</h2>
+                    <p>{{ stats.length_in_shortest | format_fish_length}}</p>
+                </div>
+                <div class="grid-item">
+                    <h2>Heaviest</h2>
+                    <p>{{ stats.weight_lbs_heaviest | format_fish_weight }}</p>
+                </div>
+                <div class="grid-item">
+                    <h2>Lightest</h2>
+                    <p>{{ stats.weight_lbs_lightest | format_fish_weight }}</p>
+                </div>
+            </div>
+            <br>
+            <a href="/collection-log">
+                <button>Collection Log</button>
+            </a>
+        </div>
+    </section>
+
+    <section>
+        <div class="grid-container">
+            <a href="/wallet" class="grid-item">
+                <button>Back to Wallet</button>
+            </a>
+        </div>
+    </section>
+</body>

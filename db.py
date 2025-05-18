@@ -247,6 +247,49 @@ class User(Object):
         fish_catches.reverse()
         return fish_catches
 
+    def fish_catches_species(self, species):
+        # List of catches of a specific species
+        fish_catches = []
+
+        for fish in self.fish_catches:
+            if fish.species == species:
+                fish_catches.append(fish)
+
+        return fish_catches
+    
+
+    def fish_catches_species_stats(self, species):
+        # Generate statistics for fish caught of a particular species
+        length_in_longest = 0
+        length_in_shortest = 0
+        weight_lbs_heaviest = 0
+        weight_lbs_lightest = 0
+        number_caught = 0
+
+        for fish in self.fish_catches_species(species):
+
+            number_caught += 1
+
+            if not length_in_longest or fish.length_in > length_in_longest:
+                length_in_longest = fish.length_in
+
+            if not length_in_shortest or fish.length_in < length_in_shortest:
+                length_in_shortest = fish.length_in
+
+            if not weight_lbs_heaviest or fish.weight_lbs > weight_lbs_heaviest:
+                weight_lbs_heaviest = fish.weight_lbs
+
+            if not weight_lbs_lightest or fish.weight_lbs < weight_lbs_lightest:
+                weight_lbs_lightest = fish.weight_lbs
+
+        return {
+            'length_in_longest': length_in_longest,
+            'length_in_shortest': length_in_shortest,
+            'weight_lbs_heaviest': weight_lbs_heaviest,
+            'weight_lbs_lightest': weight_lbs_lightest,
+            'number_caught': number_caught
+        }
+
     @property
     def fish_species(self):
         # List of unique fish species user has caught

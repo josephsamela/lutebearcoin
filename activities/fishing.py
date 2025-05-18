@@ -60,12 +60,14 @@ class Fish:
 
 class FishSpecies:
     def __init__(self, 
+            id,
             name,
             max_weight_lbs,
             max_length_in,
             icon,
             value_lbc
         ):
+        self.id = id
         self.name = name
         self.max_weight_lbs = max_weight_lbs
         self.max_length_in = max_length_in
@@ -75,6 +77,7 @@ class FishSpecies:
 # Tributary River
 
 salmon_pink = FishSpecies(
+    id = 'salmon_pink',
     name = 'Pink Salmon',
     max_weight_lbs=15,
     max_length_in=30,
@@ -83,6 +86,7 @@ salmon_pink = FishSpecies(
 )
 
 salmon_coho = FishSpecies(
+    id = 'salmon_coho',
     name = 'Coho Salmon',
     max_length_in=42,
     max_weight_lbs=36,
@@ -91,6 +95,7 @@ salmon_coho = FishSpecies(
 )
 
 salmon_sockeye = FishSpecies(
+    id = 'salmon_sockeye',
     name = 'Sockeye Salmon',
     max_length_in=30,
     max_weight_lbs=15,
@@ -99,6 +104,7 @@ salmon_sockeye = FishSpecies(
 )
 
 salmon_chinook = FishSpecies(
+    id = 'salmon_chinook',
     name = 'Chinook Salmon',
     max_length_in=60,
     max_weight_lbs=80,
@@ -109,6 +115,7 @@ salmon_chinook = FishSpecies(
 # Open Ocean
 
 arctic_grayling = FishSpecies(
+    id = 'arctic_grayling',
     name = 'Arctic Grayling',
     max_length_in=30,
     max_weight_lbs=8,
@@ -117,6 +124,7 @@ arctic_grayling = FishSpecies(
 )
 
 arctic_cod = FishSpecies(
+    id = 'arctic_cod',
     name = 'Arctic Cod',
     max_length_in=16,
     max_weight_lbs=36,
@@ -125,6 +133,7 @@ arctic_cod = FishSpecies(
 )
 
 alaska_rockfish = FishSpecies(
+    id = 'alaska_rockfish',
     name = 'Alaska Rockfish',
     max_length_in=27,
     max_weight_lbs=11,
@@ -133,6 +142,7 @@ alaska_rockfish = FishSpecies(
 )
 
 pacific_halibut = FishSpecies(
+    id = 'pacific_halibut',
     name = 'Pacific Halibut',
     max_weight_lbs=500,
     max_length_in=96,
@@ -141,6 +151,7 @@ pacific_halibut = FishSpecies(
 )
 
 bluefin_tuna = FishSpecies(
+    id = 'bluefin_tuna',
     name = 'Bluefin Tuna',
     max_length_in=100,
     max_weight_lbs=500,
@@ -149,6 +160,7 @@ bluefin_tuna = FishSpecies(
 )
 
 swordfish = FishSpecies(
+    id = 'swordfish',
     name = 'Swordfish',
     max_weight_lbs=1400,
     max_length_in=168,
@@ -159,6 +171,7 @@ swordfish = FishSpecies(
 # Estuary
 
 scup = FishSpecies(
+    id = 'scup',
     name = 'Scup',
     max_weight_lbs=4,
     max_length_in=18,
@@ -167,6 +180,7 @@ scup = FishSpecies(
 )
 
 menhaden = FishSpecies(
+    id = 'menhaden',
     name = 'Menhaden',
     max_weight_lbs=1,
     max_length_in=15,
@@ -175,6 +189,7 @@ menhaden = FishSpecies(
 )
 
 striped_bass = FishSpecies(
+    id = 'striped_bass',
     name = 'Striped Bass',
     max_weight_lbs=40,
     max_length_in=35,
@@ -183,6 +198,7 @@ striped_bass = FishSpecies(
 )
 
 black_sea_bass = FishSpecies(
+    id = 'black_sea_bass',
     name = 'Black Sea Bass',
     max_weight_lbs=9,
     max_length_in=26,
@@ -191,6 +207,7 @@ black_sea_bass = FishSpecies(
 )
 
 bonito = FishSpecies(
+    id = 'bonito',
     name = 'Bonito',
     max_weight_lbs=18,
     max_length_in=30,
@@ -199,6 +216,7 @@ bonito = FishSpecies(
 )
 
 bluefish = FishSpecies(
+    id = 'bluefish',
     name = 'Bluefish',
     max_weight_lbs=31,
     max_length_in=39,
@@ -290,3 +308,13 @@ class Fishing:
             if isinstance(object, Location):
                 l.append(object)
         return l
+
+    @property
+    def species(self):
+        s = {}
+        for location in self.locations:
+            for species in location.species:
+                s[species.id] = species
+                setattr(s[species.id], 'location', location)
+
+        return s
