@@ -156,6 +156,56 @@ swordfish = FishSpecies(
     value_lbc = 6
 )
 
+# Estuary
+
+scup = FishSpecies(
+    name = 'Scup',
+    max_weight_lbs=4,
+    max_length_in=18,
+    icon='scup.png',
+    value_lbc = 1
+)
+
+menhaden = FishSpecies(
+    name = 'Menhaden',
+    max_weight_lbs=1,
+    max_length_in=15,
+    icon='menhaden.png',
+    value_lbc = 1
+)
+
+striped_bass = FishSpecies(
+    name = 'Striped Bass',
+    max_weight_lbs=40,
+    max_length_in=35,
+    icon='striped_bass.png',
+    value_lbc = 3
+)
+
+black_sea_bass = FishSpecies(
+    name = 'Black Sea Bass',
+    max_weight_lbs=9,
+    max_length_in=26,
+    icon='striped_bass.png',
+    value_lbc = 3
+)
+
+bonito = FishSpecies(
+    name = 'Bonito',
+    max_weight_lbs=18,
+    max_length_in=30,
+    icon='bonito.png',
+    value_lbc = 3
+)
+
+bluefish = FishSpecies(
+    name = 'Bluefish',
+    max_weight_lbs=31,
+    max_length_in=39,
+    icon='bluefish.png',
+    value_lbc = 5
+)
+
 class Fishing:
     def __init__(self, db):
         self.db = db
@@ -200,6 +250,30 @@ class Fishing:
                     15, # Rare
                     15, # Rare
                     5,  # Epic
+                    1   # Epic
+                ]
+            )
+        )
+
+        self.estuary = Location(
+            db,
+            id='estuary',
+            name='Estuary',
+            drop_table=DropTable(
+                drops = [
+                    scup, 
+                    menhaden, 
+                    striped_bass, 
+                    black_sea_bass, 
+                    bonito, 
+                    bluefish
+                ],
+                weights = [
+                    25, # Uncommon
+                    25, # Uncommon
+                    15, # Rare
+                    15, # Rare
+                    15, # Rare
                     1   # Epic
                 ]
             )

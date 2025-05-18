@@ -28,7 +28,9 @@
     <section>
         <div class="card">
             <h2>Choose a fishing location!</h2>
-            <p>Bears love eating fish! The bears will buy<br>any fish you catch for Lute Bear Coin!</p>
+            <p>The bears will buy your fish for Lute Bear Coin!</p>
+            <br>
+            <img src="/static/collection_log.png">
             <p>To maintain a sustainable fish population <br>anglers may only catch <b>{{ fishing.fishing_attempts_allowed }} fish per day</b>.</p>
             {% if error %}
             <p class="error">{{ error }}</p>
@@ -49,7 +51,7 @@
     <section>
         <div class="card bear location_open_ocean">
             <h2>Open Ocean</h2>
-            <p>The <b>Open Ocean</b> is a rough saltwater marine environment with many species of game fish!</p>
+            <p>The <b>Open Ocean</b> is a rough saltwater marine environment with many species of large fish!</p>
             <a href="/fishing/open_ocean">
                 <button class="card-button">Open Ocean</button>
             </a>
@@ -60,10 +62,9 @@
         <div class="card bear location_estuary">
             <h2>Estuary</h2>
             <p>The <b>Estuary</b> is a coastal brakish environment that's home to many diverse species of fish!</p>
-            <!-- <a href="/fishing/estuary">
+            <a href="/fishing/estuary">
                 <button class="card-button">Estuary</button>
-            </a> -->
-            <button class="card-button">Coming Soon!</button>
+            </a>
         </div>
     </section>
 
