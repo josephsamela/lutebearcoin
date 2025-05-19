@@ -43,6 +43,28 @@
             {% endif %}
         </div>
     </section>
+
+    {% if user and user.admin and user.db.pending_submissions() | length > 0 %}
+    <section>
+        <div class="card bear bear8">
+            <h2>Submissions</h2>
+            <p>There are <b>{{user.db.pending_submissions() | length}}</b> pending submissions<br>that require review!</p>
+            <a href="/submissions">
+                <button class="card-button">Submissions</button>
+            </a>
+        </div>
+    </section>
+    {% endif %}
+
+    <section>
+        <div class="card bear bear22">
+            <h2>Studio</h2>
+            <p>The <b>studio</b> is where creatives turn<br>their art into Lute Bear Coin tokens!</p>
+            <a href="/studio">
+                <button class="card-button">Studio</button>
+            </a>
+        </div>
+    </section>
     <section>
         <div class="card bear bear15">
             <h2>Fishing</h2>

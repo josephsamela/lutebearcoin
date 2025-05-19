@@ -2,8 +2,10 @@ from flask import Flask, render_template, request, redirect, make_response, json
 
 import datetime
 import pytz
+from urllib.parse import urlparse
+import requests
 
-from db import Database
+from db import Database, hash_img
 db = Database('db.xlsx')
 
 from activities.fishing import Fishing
@@ -86,6 +88,10 @@ def token(token_id):
     user = authentication_check(request)
     token_id = int(token_id)
     token = db.get_token(token_id)
+
+    if token.disabled:
+        return redirect("/")
+
     return render_template(
         "token.html", 
         token=token,
@@ -245,6 +251,158 @@ def studio():
         "studio.html"
     )
 
+@app.route("/studio/create")
+def studio_create():
+
+    user = authentication_check(request)
+    if not user:
+        return redirect("/login")
+
+    return render_template(
+        "studio_create.html"
+    )
+
+@app.route("/token-submission", methods=["POST"])
+def token_submission():
+
+    user = authentication_check(request)
+    if not user:
+        return redirect("/login")
+
+    ###############
+
+    # Check title was submitted
+    if not 'title' in request.form:
+        return render_template("studio_create.html", error="Title is required.")
+    title = request.form.get("title")
+
+    # Check URL was submitted
+    if not 'url' in request.form:
+        return render_template("studio_create.html", error="URL is required.")
+    url = request.form.get("url")
+
+    ###############
+
+    # Check if user has already submitted a token this week
+    if user.submissions_this_week > 0:
+        return render_template("studio_create.html", error="You submitted a token this week. Try later!" , title=title, url=url)
+
+    ###############
+
+    # Check title doesn't contain any special characters
+    special_characters = "@#$%^&*()-+?_=,<>{}`~[]:|'/\"\\"
+    if '' or any(c in special_characters for c in title):
+        return render_template("studio_create.html", error="Title can't contain special characters.", title=title, url=url)
+    
+    # Check title is less than 40 characters
+    if len(title) >= 40:
+        return render_template("studio_create.html", error="Title must be less than 40 characters.", title=title, url=url)
+
+    # Check existing token doesn't already have this title
+    if title in db.get_all_token_titles():
+        return render_template("studio_create.html", error="Another token already has this title.", title=title, url=url)
+    
+    ###############
+
+    # Check this exact url hasn't already been submitted
+    if  url in db.get_all_token_urls():
+        return render_template("studio_create.html", error="This image has already been submitted.", title=title, url=url)
+
+    # Check url has a valid scheme
+    url = urlparse(url)
+    if not url.scheme == 'https' or url.scheme == 'http':
+        return render_template("studio_create.html", error="Please submit a properly formatted url.", title=title, url=url.geturl())
+
+    # Check file is .jpg
+    extension = url.path.split('.')[-1]
+    if not extension in ['jpg', 'JPG', 'jpeg', 'JPEG']:
+        return render_template("studio_create.html", error="You can only submit JPG images.", title=title, url=url.geturl())
+
+    # Check url isn't broken
+    rsp = requests.head(url.geturl())
+    if not rsp.ok:
+        return render_template("studio_create.html", error="That url is broken. Please try again!", title=title, url=url.geturl())
+
+    # Check existing token doesn't already have this hash!
+    img_hash = hash_img(url.geturl())
+    if img_hash in db.get_all_token_hashes():
+        return render_template("studio_create.html", error="This image has already been submitted.", title=title, url=url.geturl())
+
+    ##########################################
+
+    # If the submission passes all the above checks, the submission is created!
+
+    db.write_new_token_submission(
+        token_note=title,
+        token_url=url.geturl(),
+        token_hash=img_hash,
+        token_author_id=user.id
+    )
+
+    return render_template(
+        "success.html",
+        type='submission'
+    )
+
+@app.route("/submissions")
+def submissions():
+
+    user = authentication_check(request)
+    if not user:
+        return redirect("login")
+    
+    if not user.admin:
+        return redirect("/")
+        
+    return render_template(
+        "submissions.html",
+        submissions=db.pending_submissions()
+    )
+
+@app.route("/submission-review", methods=["POST"])
+def submission_review():
+
+    user = authentication_check(request)
+    if not user:
+        return redirect("login")
+    
+    if not user.admin:
+        return redirect("home")
+    
+    submission_id = int(request.form.get("submission_id"))
+    action = request.form.get("action")
+
+    match action:
+        case 'approve':
+            db.submission_approve(submission_id)
+        case 'deny':
+            db.submission_deny(submission_id)
+
+    return render_template(
+        "success.html",
+        type='submission_'+action,
+        submission=db.submissions[submission_id]
+    )
+
+@app.route("/submission-review-confirmation", methods=["POST"])
+def submission_review_confirmation():
+
+    user = authentication_check(request)
+    if not user:
+        return redirect("login")
+    
+    if not user.admin:
+        return redirect("home")
+    
+    submission_id = int(request.form.get("submission_id"))
+    review_type = request.form.get("type")
+
+    return render_template(
+        "submission_review_confirmation.html",
+        type=review_type,
+        submission=db.submissions[submission_id]
+    )
+
 @app.route("/transaction", methods=["POST"])
 def transaction():
 
@@ -271,7 +429,7 @@ def transaction():
             amount = int(amount)
 
             if amount < 0:
-                return render_template("send_lbc.html", user=user_from, users=db.user_list(user_from), error="Cannot send negative LBC.")
+                return render_template("send_lbc.html", user=user_from, users=db.user_list(user_from), error="Can't send negative LBC.")
 
             if not db.get_user(user_to):
                 return render_template("send_lbc.html", user=user_from, users=db.user_list(user_from), error="Recipient does not exist.")
@@ -552,6 +710,12 @@ def format_date(d):
     eastern = pytz.timezone('US/Eastern')
     dt = datetime.datetime.fromisoformat(d).replace(tzinfo=datetime.UTC)
     return dt.astimezone(eastern).strftime("%b %-d, %Y %-I:%M %p")
+
+@app.template_filter()
+def format_day(d):
+    eastern = pytz.timezone('US/Eastern')
+    dt = datetime.datetime.fromisoformat(d).replace(tzinfo=datetime.UTC)
+    return dt.astimezone(eastern).strftime("%b %-d, %Y")
 
 @app.template_filter()
 def format_credit_date(d):

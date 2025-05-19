@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Review</title>
+    <link rel="icon" type="image/x-icon" href="/static/logo.png">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Lute Bear Coin">
+    <link rel="apple-touch-icon" href="/static/logo.png">
+    <meta name="theme-color" content="#4a1a19">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+    <meta name="format-detection" content="telephone=no">
+</head>
+
+<body>
+    <section>
+        <a href="/">
+            <h1>Lute Bear Coin</h1>
+        </a>
+        <a href="/wallet">
+            <img class="logo" src="/static/logo.png">
+        </a>
+    </section>
+
+    <section>
+        <div class="card">
+            <h2>Review</h2>
+            <p>You're about to <b>{{ type }}</b> this submission.</p>
+            {% if type == "approve" %}
+            <p>If you <b>approve</b> this token it will be added<br>to <a href="/user/{{submission.author.username}}">{{submission.author.nickname}}</a>'s wallet and be publically visible.</p>
+            {% elif type == "deny" %}
+            <p>If you <b>deny</b> this token, that means it contains content not appropriate for the Lute Bear Coin network and it will be deleted.</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <section>
+        <div class="card">
+            <h2>{{ submission.token.note }}</h2>
+            <p>Created by <a href="/user/{{submission.author.username}}">{{submission.author.nickname}}</a> on  {{ submission.created_at | format_day }}</p>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <img src="{{submission.token.url}}">
+                </div>
+            </div>
+            <br>
+            {% if type == "approve" %}
+            <form action="/submission-review" method="post">
+                <input type="hidden" name="submission_id" value="{{ submission.id }}" required />
+                <input type="hidden" name="action" value="approve" required />
+                <button type="submit">Approve</button>
+            </form>
+            {% elif type == "deny" %}
+            <form action="/submission-review" method="post">
+                <input type="hidden" name="submission_id" value="{{ submission.id }}" required />
+                <input type="hidden" name="action" value="deny" required />
+                <button type="submit">Deny</button>
+            </form>
+            {% endif %}
+
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <section>
+        <div class="grid-container">
+            <a href="/wallet" class="grid-item">
+                <button>Back to Wallet</button>
+            </a>
+        </div>
+    </section>
+
+</body>

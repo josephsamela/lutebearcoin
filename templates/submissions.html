@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Submissions</title>
+    <link rel="icon" type="image/x-icon" href="/static/logo.png">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Lute Bear Coin">
+    <link rel="apple-touch-icon" href="/static/logo.png">
+    <meta name="theme-color" content="#4a1a19">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <meta name="format-detection" content="telephone=no">
+</head>
+
+<body>
+    <section>
+        <a href="/">
+            <h1>Lute Bear Coin</h1>
+        </a>
+        <a href="/wallet">
+            <img class="logo" src="/static/logo.png">
+        </a>
+    </section>
+    
+    <section>
+        <div class="card">
+            <h2>Submissions</h2>
+            {% if submissions | length == 1 %}
+            <p>There is <b>{{ submissions | length }}</b> pending submission!</p>
+            {% else %}
+            <p>There are <b>{{ submissions | length }}</b> pending submissions!</p>
+            {% endif %}
+        </div>
+    </section>
+
+    {% for submission in submissions %}
+    <section>
+        <div class="card">
+            <h2>{{ submission.token.note }}</h2>
+            <p>Created by <a href="/user/{{submission.author.username}}">{{submission.author.nickname}}</a> on {{ submission.created_at | format_day }}</p>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <img src="{{submission.token.url}}">
+                </div>
+            </div>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <form action="/submission-review-confirmation" method="post">
+                        <input type="hidden" name="type" value="approve"/>
+                        <input type="hidden" name="submission_id" value="{{submission.id}}"/>
+                        <button type="submit">Approve</button>
+                    </form>
+                </div>
+                <div class="grid-item">
+                    <form action="/submission-review-confirmation" method="post">
+                        <input type="hidden" name="type" value="deny"/>
+                        <input type="hidden" name="submission_id" value="{{submission.id}}"/>
+                        <button type="submit">Deny</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endfor %}
+
+
+    <section>
+        <div class="grid-container">
+            <a href="/wallet" class="grid-item">
+                <button>Back to Wallet</button>
+            </a>
+        </div>
+    </section> 
+</body>

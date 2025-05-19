@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Create</title>
+    <link rel="icon" type="image/x-icon" href="/static/logo.png">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Lute Bear Coin">
+    <link rel="apple-touch-icon" href="/static/logo.png">
+    <meta name="theme-color" content="#4a1a19">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <meta name="format-detection" content="telephone=no">
+</head>
+
+<body>
+    <section>
+        <a href="/">
+            <h1>Lute Bear Coin</h1>
+        </a>
+        <a href="/wallet">
+            <img class="logo" src="/static/logo.png">
+        </a>
+    </section>
+    <section>
+        <div class="card">
+            <h2>Submit Token</h2>
+            <p>You're about to create a <b>token</b>!</p>
+
+            <form action="/token-submission" method="post">
+                <div class="card">
+                     <h3>Title</h3>
+                    {% if title %}
+                    <input type="text" name="title" value="{{title}}" required />
+                    {% else %}
+                    <input type="text" name="title" required />
+                    {% endif %}
+
+                    <h3>Link</h3>
+                    {% if url %}
+                    <input id="token-submission-form-url" type="text" name="url" value="{{url}}" required oninput="update_token_preview()" />
+                    {% else %}
+                    <input id="token-submission-form-url" type="text" name="url" required oninput="update_token_preview()" />
+                    {% endif %}
+
+                    <div class="grid-container">
+                        <div class="grid-item">
+                            <img id="token-preview" src="/static/blank.jpg">
+                        </div>
+                    </div>
+                    {% if error %}
+                    <p class="error">{{ error }}</p>
+                    {% endif %}
+                    <br>
+                    <button type="submit">Submit</button>
+                </div>    
+            </form>
+        </div>
+    </section>
+
+    <section>
+        <div class="grid-container">
+            <a href="/wallet" class="grid-item">
+                <button>Back to Wallet</button>
+            </a>
+        </div>
+    </section>
+
+</body>
+
+<script>
+
+    function update_token_preview() {
+
+        var url = document.getElementById('token-submission-form-url').value
+
+        if (url.endsWith(".jpg") || url.endsWith(".JPG") || url.endsWith(".jpeg") || url.endsWith(".JPEG")) {
+            // If user enters .jpg url update preview window to show submission
+            document.getElementById('token-preview').src = url
+        }
+        else {
+            // Otherwise just show the blank placeholder
+            document.getElementById('token-preview').src = "/static/blank.jpg"
+        }
+    }
+
+    window.onload = function() {
+        update_token_preview()
+    }
+
+</script>

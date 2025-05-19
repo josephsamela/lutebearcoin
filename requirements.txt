@@ -1,5 +1,5 @@
 openpyxl
 flask
 pytz
-gitpython
-
+requests
+pillow

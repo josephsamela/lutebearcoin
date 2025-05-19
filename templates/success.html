@@ -149,6 +149,37 @@
             </div>
         </div>
     </section>
+    {% elif type == "submission" %}
+    <section>
+        <div class="card bear bear21">
+            <h2>Success!</h2>
+            <p>Your submission has been recieved!<br>If the bears approve of your token<br>they'll add it to your wallet.</p>
+            <a href="/wallet">
+                <button class="card-button">Back to Wallet</button>
+            </a>
+        </div>
+    <section>
+    {% elif type == "submission_approve" %}
+    <section>
+        <div class="card">
+            <h2>Success!</h2>
+            <p>Submission is approved.</p>
+            <br>
+            <a href="/submissions">
+                <button>Submissions</button>
+            </a>
+        </div>
+    <section>
+    {% elif type == "submission_deny" %}
+    <section>
+        <div class="card">
+            <h2>Success!</h2>
+            <p>Submission is denied.</p>
+            <br>
+            <a href="/submissions">
+                <button>Submissions</button>
+            </a>
+        </div>
+    <section>
     {% endif %}
-
 </body>

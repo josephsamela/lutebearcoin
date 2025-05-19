@@ -3,6 +3,8 @@ import datetime
 import uuid
 import json
 import pytz
+from PIL import Image
+import requests
 
 class Database:
     def __init__(self, path):
@@ -18,6 +20,7 @@ class Database:
         self.transactions = self.load_data(self.workbook, 'transactions', Transaction)
         self.listings = self.load_data(self.workbook, 'listings', Listing)
         self.fish_catches = self.load_data(self.workbook, 'fish_catches', FishCatches)
+        self.submissions = self.load_data(self.workbook, 'submissions', Submission)
 
     def write_transaction(self, user_from, user_to, amount=0, token=None):
         worksheet=self.workbook['transactions']
@@ -58,6 +61,73 @@ class Database:
         self.workbook.save(self.path)
         self.load_db()
 
+    def write_new_token_submission(self, token_note, token_url, token_hash, token_author_id):
+
+        # First create a new token record
+        # Token is disabled=True
+        token_id = max(self.tokens.keys() or [0])+1
+
+        worksheet=self.workbook['tokens']
+        worksheet.append([
+            token_id,
+            datetime.datetime.now().isoformat(),
+            token_note,
+            token_url,
+            True,
+            token_hash
+        ])
+        self.workbook.save(self.path)
+
+        # Then create submission for that token
+        # reviewed = False
+        worksheet=self.workbook['submissions']       
+        worksheet.append([
+            max(self.submissions.keys() or [0])+1,
+            datetime.datetime.now().isoformat(),
+            token_author_id,
+            token_id,
+            False
+        ])
+        self.workbook.save(self.path)
+
+        self.load_db()
+
+    def submission_approve(self, submission_id):
+        # Submission is approved
+        # 1. Set Submission reviewed = True
+        # 2. Set Token disabled = False
+        # 3. Send Token from System to User
+        submission = self.submissions[submission_id]
+
+        # 1. Set Submission reviewed = True
+        worksheet=self.workbook['submissions']
+        worksheet.cell(row=submission_id+1, column=5).value = True
+        self.workbook.save(self.path)
+
+        # 2. Set Token disabled = False
+        worksheet=self.workbook['tokens']
+        worksheet.cell(row=submission.token.id+1, column=5).value = False
+        self.workbook.save(self.path)
+
+        # 3. Send Token from System to User
+        self.write_transaction(
+            user_from=0,
+            user_to=submission.author.id,
+            token=submission.token.id
+        )
+
+        self.workbook.save(self.path)
+        self.load_db()
+
+    def submission_deny(self, submission_id):
+        # Submission is denied
+        # 1. Set Submission reviewed = True
+        # 2. Delete Token
+        worksheet=self.workbook['submissions']
+        worksheet.cell(row=submission_id+1, column=5).value = True
+        self.workbook.save(self.path)
+        self.load_db()
+
     def load_data(self, workbook, worksheet, pattern):
         first = True
         headers = None
@@ -85,6 +155,24 @@ class Database:
             if token.id == token_id:
                 return token
         return None
+
+    def get_all_token_titles(self):
+        token_titles = []
+        for id,token in self.tokens.items():
+            token_titles.append(token.note)
+        return token_titles
+    
+    def get_all_token_urls(self):
+        token_urls = []
+        for id,token in self.tokens.items():
+            token_urls.append(token.note)
+        return token_urls
+    
+    def get_all_token_hashes(self):
+        token_hashes = []
+        for id,token in self.tokens.items():
+            token_hashes.append(token.hash)
+        return token_hashes
 
     def start_session(self, username):
         session = Session(username)
@@ -125,6 +213,15 @@ class Database:
             else:
                 for_sale.pop(listing.token.id)
         return for_sale
+    
+    def pending_submissions(self):
+        subs = []
+        
+        for id, sub in self.submissions.items():
+            if not sub.reviewed:
+                subs.append(sub)
+        
+        return subs
 
 class Object:
     def __init__(self, d, db):
@@ -238,6 +335,15 @@ class User(Object):
         return transactions
 
     @property
+    def submissions(self):
+        submissions = []
+        for id, submission in self.db.submissions.items():
+            if submission.author_id == self.id:
+                submissions.append(submission)
+        submissions.reverse()
+        return submissions
+
+    @property
     def fish_catches(self):
         fish_catches = []
         for id, fish in self.db.fish_catches.items():
@@ -257,7 +363,6 @@ class User(Object):
 
         return fish_catches
     
-
     def fish_catches_species_stats(self, species):
         # Generate statistics for fish caught of a particular species
         length_in_longest = 0
@@ -306,7 +411,7 @@ class User(Object):
         fish_caught_today = 0
 
         # No catch history means user has never fished before
-        if len(self.fish_catches) is 0:
+        if len(self.fish_catches) == 0:
             return fish_caught_today
 
         for fish in self.fish_catches:
@@ -331,6 +436,25 @@ class User(Object):
         percent_complete = len(self.fish_species_from_location(location)) / len(location.species)
         return int(percent_complete*100)
 
+    @property
+    def submissions_this_week(self):
+        # Indicate the count of fish user has caught today
+        eastern = pytz.timezone('US/Eastern')
+        submissions_this_week = 0
+
+        # No submissions means never submitted before
+        if len(self.submissions) == 0:
+            return submissions_this_week
+
+        for submission in self.submissions:
+            submission_ts = datetime.datetime.fromisoformat(submission.created_at).replace(tzinfo=datetime.UTC).astimezone(eastern)
+
+            # "Yesterday" is ditermined by the calendar day.
+            if submission_ts.date() > datetime.datetime.today().astimezone(eastern).date() - datetime.timedelta(weeks=1):
+                submissions_this_week += 1
+        
+        return submissions_this_week
+
     def to_dict(self):
         d = {
             'id': self.id,
@@ -344,6 +468,28 @@ class User(Object):
         return d
 
 class Token(Object):
+
+    next_hash_check = None
+
+    @property
+    def url(self):    
+        # This method is supped to check the linked image hasn't changes since it was approved.
+        # If the image changes to something else other than the approved version it's blanked out.
+        # However, in-practice checking every single token make the app run slow.
+
+        if self.next_hash_check and datetime.datetime.now() < self.next_hash_check:
+            # If token hash was just checked and it's fine return the link
+            return self.link
+        else:
+            # If token hasn't been checked. Check it.
+            if hash_img(self.link) == self.hash:
+                # If the hash matches set a future check ts and return the link
+                self.next_hash_check = datetime.datetime.now() + datetime.timedelta(minutes=10)
+                return self.link
+            else:
+                # If the hash doesn't match disable it and return blank
+                self.disabled = True
+                return '/static/blank.jpg'
 
     @property
     def owner(self):
@@ -380,6 +526,12 @@ class Token(Object):
             return self.db.for_sale()[self.id]
         else:
             return None
+
+    @property
+    def submission(self):
+        for id, sub in self.db.submissions.items():
+            if sub.author_id == self.id:
+                return sub
 
     def to_dict(self):
         d = {
@@ -438,6 +590,16 @@ class Listing(Object):
     def token(self):
         return self.db.tokens[getattr(self, 'token_id')]
 
+class Submission(Object):
+
+    @property
+    def author(self):
+        return self.db.users[self.author_id]
+    
+    @property
+    def token(self):
+        return self.db.tokens[self.token_id]
+
 class Session:
     def __init__(self, username):
         self.username = username
@@ -446,3 +608,15 @@ class Session:
 
 class FishCatches(Object):
     pass
+
+def hash_img(url):
+    # Take a PIL image and compute a "hash" representing the state of the image.
+    # https://stackoverflow.com/questions/49689550/simple-hash-of-pil-image
+    img = Image.open(requests.get(url, stream=True).raw)
+    img = img.resize((20, 20))
+    img = img.convert("P")
+    pixel_data = list(img.getdata())
+    avg_pixel = sum(pixel_data)/len(pixel_data)
+    bits = "".join(['1' if (px >= avg_pixel) else '0' for px in pixel_data])
+    hex_representation = str(hex(int(bits, 2)))[2:][::-1].upper()
+    return hex_representation
