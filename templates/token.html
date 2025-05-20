@@ -33,6 +33,7 @@
                     <img src="{{token.url}}">
                 </div>
             </div>
+            <p>Created by <a href="/user/{{token.submission.author.username}}">{{ token.submission.author.nickname }}</a> on {{ token.submission.created_at | format_day }}</p>
         </div>
     </section>
 

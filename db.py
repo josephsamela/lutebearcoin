@@ -484,7 +484,7 @@ class Token(Object):
             # If token hasn't been checked. Check it.
             if hash_img(self.link) == self.hash:
                 # If the hash matches set a future check ts and return the link
-                self.next_hash_check = datetime.datetime.now() + datetime.timedelta(minutes=10)
+                self.next_hash_check = datetime.datetime.now() + datetime.timedelta(days=1)
                 return self.link
             else:
                 # If the hash doesn't match disable it and return blank
@@ -530,7 +530,7 @@ class Token(Object):
     @property
     def submission(self):
         for id, sub in self.db.submissions.items():
-            if sub.author_id == self.id:
+            if sub.token_id == self.id:
                 return sub
 
     def to_dict(self):
