@@ -280,6 +280,17 @@ class User(Object):
                 Achievement('Most NFT', 'award2.png')
             )
 
+        # Achievement 3 : 100% Collection Log
+        a3 = True
+        from activities.fishing import Fishing
+        fishing = Fishing(self.db)
+        if len(self.fish_species) < len(fishing.species):
+            a3 = False 
+        if a3:
+            awards.append(
+                Achievement('All Species', 'award3.png')
+            )
+
         awards.append(Achievement('', 'award0.png'))
 
         return awards
