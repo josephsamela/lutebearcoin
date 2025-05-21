@@ -53,7 +53,7 @@
                         <img src="/static/{{species.icon}}" class="fish-icon">
                         {% endif %}
                     </a>
-                    <h2>{{species.name}}</h2>
+                    <h2 class="fish-name">{{species.name}}</h2>
                 </div>
                 {% endfor %}
             </div>
@@ -68,7 +68,7 @@
     <section>
         <div class="card">
             <h2>Longest Fish</h2>
-            <p>Anglers have caught <b>{{ location.catches | length }}</b> fish<br>from the <b>{{location.name}}</b>!</p>
+            <p>Anglers caught <b>{{ location.catches | length }}</b> fish from the <b>{{location.name}}</b>!</p>
             <table>
                 <tr>
                     <th>Angler</th>

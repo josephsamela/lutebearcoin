@@ -31,14 +31,14 @@
 
             <form action="/token-submission" method="post">
                 <div class="card">
-                     <h3>Title</h3>
+                    <h3>Title</h3>
                     {% if title %}
                     <input type="text" name="title" value="{{title}}" required />
                     {% else %}
                     <input type="text" name="title" required />
                     {% endif %}
 
-                    <h3>Link</h3>
+                    <h3>Link to jpg</h3>
                     {% if url %}
                     <input id="token-submission-form-url" type="text" name="url" value="{{url}}" required oninput="update_token_preview()" />
                     {% else %}

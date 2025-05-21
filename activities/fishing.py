@@ -224,6 +224,98 @@ bluefish = FishSpecies(
     value_lbc = 5
 )
 
+# Coral Reef
+
+sergeant_major = FishSpecies(
+    id = 'sergeant_major',
+    name = 'Sergeant Major',
+    max_weight_lbs=0.5,
+    max_length_in=9,
+    icon='sergeant_major.png',
+    value_lbc = 1
+)
+
+yellowtail_snapper = FishSpecies(
+    id = 'yellowtail_snapper',
+    name = 'Yellowtail Snapper',
+    max_weight_lbs=11,
+    max_length_in=24,
+    icon='yellowtail_snapper.png',
+    value_lbc = 1
+)
+
+spanish_mackerel = FishSpecies(
+    id = 'spanish_mackerel',
+    name = 'Spanish Mackerel',
+    max_weight_lbs=14,
+    max_length_in=37,
+    icon='spanish_mackerel.png',
+    value_lbc = 2
+)
+
+goatfish = FishSpecies(
+    id = 'goatfish',
+    name = 'Goatfish',
+    max_weight_lbs=2.5,
+    max_length_in=15,
+    icon='goatfish.png',
+    value_lbc = 2
+)
+
+parrotfish = FishSpecies(
+    id = 'parrotfish',
+    name = 'Parrotfish',
+    max_weight_lbs=3.5,
+    max_length_in=25,
+    icon='parrotfish.png',
+    value_lbc = 3
+)
+
+hogfish = FishSpecies(
+    id = 'hogfish',
+    name = 'Hogfish',
+    max_weight_lbs=34,
+    max_length_in=35,
+    icon='hogfish.png',
+    value_lbc = 3
+)
+
+mahi_mahi = FishSpecies(
+    id = 'mahi_mahi',
+    name = 'Mahi Mahi',
+    max_weight_lbs=40,
+    max_length_in=40,
+    icon='mahi_mahi.png',
+    value_lbc = 4
+)
+
+red_grouper = FishSpecies(
+    id = 'red_grouper',
+    name = 'Red Grouper',
+    max_weight_lbs=51,
+    max_length_in=49,
+    icon='red_grouper.png',
+    value_lbc = 4
+)
+
+trevally = FishSpecies(
+    id = 'trevally',
+    name = 'Giant trevally',
+    max_weight_lbs=175,
+    max_length_in=67,
+    icon='trevally.png',
+    value_lbc = 5
+)
+
+humphead_wrasse = FishSpecies(
+    id = 'humphead_wrasse',
+    name = 'Humphead Wrasse',
+    max_weight_lbs=400,
+    max_length_in=80,
+    icon='humphead_wrasse.png',
+    value_lbc = 6
+)
+
 class Fishing:
     def __init__(self, db):
         self.db = db
@@ -293,6 +385,38 @@ class Fishing:
                     15, # Rare
                     15, # Rare
                     1   # Epic
+                ]
+            )
+        )
+
+        self.coral_reef = Location(
+            db,
+            id='coral_reef',
+            name='Coral Reef',
+            drop_table=DropTable(
+                drops = [
+                    sergeant_major,
+                    yellowtail_snapper,
+                    spanish_mackerel,
+                    goatfish,
+                    parrotfish,
+                    hogfish,
+                    mahi_mahi,
+                    red_grouper,
+                    trevally,
+                    humphead_wrasse
+                ],
+                weights = [
+                    20,
+                    20,
+                    15, 
+                    15, 
+                    10, 
+                    10,
+                    4, 
+                    3,
+                    2, 
+                    1
                 ]
             )
         )
