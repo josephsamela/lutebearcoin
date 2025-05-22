@@ -319,7 +319,13 @@ def token_submission():
         return render_template("studio_create.html", error="You can only submit JPG images.", title=title, url=url.geturl())
 
     # Check url isn't broken
-    rsp = requests.head(url.geturl())
+    rsp = requests.get(
+        url.geturl(), 
+        stream=True,
+        headers={
+            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36'
+        }
+    )
     if not rsp.ok:
         return render_template("studio_create.html", error="That url is broken. Please try again!", title=title, url=url.geturl())
 

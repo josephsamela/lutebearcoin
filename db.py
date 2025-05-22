@@ -623,7 +623,16 @@ class FishCatches(Object):
 def hash_img(url):
     # Take a PIL image and compute a "hash" representing the state of the image.
     # https://stackoverflow.com/questions/49689550/simple-hash-of-pil-image
-    img = Image.open(requests.get(url, stream=True).raw)
+
+    rsp = requests.get(
+        url, 
+        stream=True,
+        headers={
+            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36'
+        }
+    )
+
+    img = Image.open(rsp.raw)
     img = img.resize((20, 20))
     img = img.convert("P")
     pixel_data = list(img.getdata())
