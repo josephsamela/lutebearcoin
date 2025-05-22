@@ -94,6 +94,10 @@ input, select {
     object-fit: cover;
 }
 
+.grid-item p {
+    margin: 0px;
+}
+
 .fish-caught {
     filter: none !important;
 }
@@ -106,6 +110,12 @@ input, select {
     aspect-ratio: auto;
     filter: contrast(0%) brightness(50%) opacity(0.25);
     pointer-events: none;
+}
+
+.studio-icon {
+    width: 50%;
+    margin: auto;
+    filter: invert(10%) sepia(59%) saturate(908%) hue-rotate(320deg) brightness(110%) contrast(96%);
 }
 
 img {
