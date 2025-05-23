@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Edit Profile</title>
+    <link rel="icon" type="image/x-icon" href="/static/logo.png">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Lute Bear Coin">
+    <link rel="apple-touch-icon" href="/static/logo.png">
+    <meta name="theme-color" content="#4a1a19">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+    <meta name="format-detection" content="telephone=no">
+</head>
+
+<body>
+    <section>
+        <a href="/">
+            <h1>Lute Bear Coin</h1>
+        </a>
+        <a href="/wallet">
+            <img class="logo" src="/static/logo.png">
+        </a>
+    </section>
+
+    <section>
+        <div class="credit-card">
+            <img class="card-award-icon" src="/static/{{ user.awards[0].icon }}">
+            <p class="card-award-text">{{ user.awards[0].name }}</p>
+            <p class="card-text">{{ user.id | format_account_number }}</p>
+            <span class="card-subtext spanleft">{{ user.nickname }} {{ user.created_at | format_credit_date }}</span><span class="card-subtext spanright">{{ user.balance }} LBC • {{ user.tokens | length }} NFT</span>
+        </div>
+    </section>
+
+    <section>
+        <div class="card">
+            <h2>Change Password</h2>
+            <br>
+
+            <form action="/change-password" method="post">
+                <h3>Current Password</h3>
+                <input type="password" name="current_password" required>
+
+                <h3>New Password</h3>
+                <input type="password" name="new_password" required>
+
+                <br>
+                {% if error %}
+                <p class="error">{{ error }}</p>
+                {% endif %}
+                <br>
+                <button type="submit">Submit</button>
+            </form>
+
+        </div>
+    </section>
+
+    <section>
+        <div class="grid-container">
+            <a href="/logout" class="grid-item">
+                <button>Logout</button>
+            </a>
+        </div>
+    </section>    
+</body>

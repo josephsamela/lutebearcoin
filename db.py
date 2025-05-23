@@ -22,6 +22,19 @@ class Database:
         self.fish_catches = self.load_data(self.workbook, 'fish_catches', FishCatches)
         self.submissions = self.load_data(self.workbook, 'submissions', Submission)
 
+    def create_account(self, username, password, nickname):
+        worksheet=self.workbook['users']       
+        worksheet.append([
+            max(self.users.keys() or [0])+1,
+            username,
+            password,
+            nickname,
+            datetime.datetime.now().isoformat(),
+            False
+        ])
+        self.workbook.save(self.path)
+        self.load_db()
+
     def write_transaction(self, user_from, user_to, amount=0, token=None):
         worksheet=self.workbook['transactions']
         worksheet.append([
@@ -128,6 +141,13 @@ class Database:
         self.workbook.save(self.path)
         self.load_db()
 
+    def update_user_password(self, user, password):
+        # Update user password
+        worksheet=self.workbook['users']
+        worksheet.cell(row=user.id+2, column=3).value = password
+        self.workbook.save(self.path)
+        self.load_db()
+
     def load_data(self, workbook, worksheet, pattern):
         first = True
         headers = None
@@ -198,6 +218,18 @@ class Database:
             users.append(u.username)
         return users
     
+    def all_usernames(self):
+        usernames = []
+        for id,user in self.users.items():
+            usernames.append(user.username)
+        return usernames
+    
+    def all_nicknames(self):
+        nicknames = []
+        for id,user in self.users.items():
+            nicknames.append(user.nickname)
+        return nicknames
+
     def transaction_list(self):
         transactions = []
         for i,t in self.transactions.items():

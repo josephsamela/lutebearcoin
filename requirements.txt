@@ -1,5 +1,6 @@
 openpyxl
 flask
+flask_bcrypt
 pytz
 requests
 pillow

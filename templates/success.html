@@ -181,5 +181,26 @@
             </a>
         </div>
     <section>
+    {% elif type == "password_change" %}
+    <section>
+        <div class="card bear bear23">
+            <h2>Success!</h2>
+            <p>Your password has been updated!</p>
+        </div>
+    <section>
+    <a href="/login">
+        <button>Login</button>
+    </a>
+    {% elif type == "signup" %}
+
+    <section>
+        <div class="card bear bear24">
+            <h2>Success!</h2>
+            <p>Welcome to Lute Bear Coin!<br>Your account has been created!</p>
+        </div>
+    <section>
+    <a href="/wallet">
+        <button>Visit Wallet</button>
+    </a>
     {% endif %}
 </body>

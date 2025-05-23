@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, make_response, jsonify
+from flask import Flask, render_template, request, redirect, make_response
+from flask_bcrypt import Bcrypt
 
 import datetime
 import pytz
@@ -11,6 +12,7 @@ db = Database('db.xlsx')
 from activities.fishing import Fishing
 
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
 
 @app.route("/")
 def home():
@@ -37,6 +39,55 @@ def wallet():
         tokens=tokens,
         user=user
     )
+
+@app.route("/edit-profile")
+def edit_profile():
+    user = authentication_check(request)
+    if not user:
+        return redirect("login")
+
+    return render_template(
+        "edit_profile.html",
+        user=user
+    )
+
+@app.route("/change-password", methods=["POST"])
+def change_password():
+    user = authentication_check(request)
+    if not user:
+        return redirect("login")
+
+    current_password = request.form.get("current_password")
+    new_password = request.form.get("new_password")
+
+    # 1. Check current_password is correct
+    if not bcrypt.check_password_hash(user.password, current_password):
+        return render_template(
+           "edit_profile.html",
+            user=user,
+            error="Current password is incorrect"
+        )
+
+    # 2. Check that new password is at least 8 characters
+    if not len(new_password) >= 8:
+        return render_template(
+           "edit_profile.html",
+            user=user,
+            error="New password must be at least 8 characters"
+        )
+
+    # If the request passes both checks, get the new password hash write to db
+    new_password_hash = bcrypt.generate_password_hash(new_password).decode('utf-8')
+    db.update_user_password(user, new_password_hash)
+
+    db.end_session(user.username)
+
+    return render_template(
+        "success.html",
+        type='password_change',
+        user=user
+    )
+
 
 @app.route("/leaderboard")
 def leaderboard():
@@ -109,13 +160,114 @@ def login():
             password = request.form.get("password")
             user = db.get_user(username)
             
-            if not user or user.password != password:
+            if not user or not bcrypt.check_password_hash(user.password, password):
                 return render_template("login.html", error="Invalid username or password")
             session = db.start_session(username)
 
             response = make_response(redirect('/wallet'))
             response.set_cookie('session', session.token, expires=session.expires)
             return response
+
+@app.route("/signup")
+def signup():
+    invite = request.args.get('invite')
+    if invite == '15fc47b9-336a-4f2e-b312-e539285791e0':
+        return render_template(
+            'signup.html',
+            state='invited'
+        )
+    else:
+        return render_template(
+            'signup.html',
+            state='closed'
+        )
+
+@app.route("/create-account", methods=["POST"])
+def create_account():
+
+    username = request.form.get("username").lower()
+    nickname = request.form.get("nickname")
+    password = request.form.get("password")
+
+    # Check username is >= 3 char
+    if not len(username) >= 3:
+        return render_template(
+            'signup.html',
+            state='invited',
+            error='Username must be at least 3 characters'
+        )
+    # Check username is < 255 char
+    if not len(username) < 255:
+        return render_template(
+            'signup.html',
+            state='invited',
+            error='Username cannot be more than 255 characters'
+        )
+
+    # Check nickname is >= 3 char
+    if not len(nickname) >= 3:
+        return render_template(
+            'signup.html',
+            state='invited',
+            error='Nickname must be at least 3 characters'
+        )
+    # Check nickname is < 255 char
+    if not len(nickname) < 255:
+        return render_template(
+            'signup.html',
+            state='invited',
+            error='Nickname cannot be more than 255 characters'
+        )
+
+    # Check password is > 8 char
+    if not len(password) >= 3:
+        return render_template(
+            'signup.html',
+            state='invited',
+            error='Password must be at least 8 characters'
+        )
+    # Check password is < 255 char
+    if not len(password) < 255:
+        return render_template(
+            'signup.html',
+            state='invited',
+            error='Password cannot be more than 255 characters'
+        )
+
+    # Check username is not already taken
+    if username in db.all_usernames():
+        return render_template(
+            'signup.html',
+            state='invited',
+            error='Sorry, that username is already taken'
+        )
+    # Check nickname is not already taken
+    if nickname in db.all_nicknames():
+        return render_template(
+            'signup.html',
+            state='invited',
+            error='Sorry, that nickname is already taken'
+        )
+    
+    password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    # Create account
+    db.create_account(username, password_hash, nickname)
+
+    # Login user
+    user = db.get_user(username)
+    session = db.start_session(username)
+
+    # Return success page
+    response = make_response(
+        render_template(
+            "success.html",
+            type='signup',
+            user=user
+        )
+    )
+    response.set_cookie('session', session.token, expires=session.expires)
+    return response
 
 @app.route("/logout")
 def logout():
