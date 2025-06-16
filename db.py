@@ -516,23 +516,24 @@ class Token(Object):
 
     @property
     def url(self):    
+        return self.link
         # This method is supped to check the linked image hasn't changes since it was approved.
         # If the image changes to something else other than the approved version it's blanked out.
         # However, in-practice checking every single token make the app run slow.
-
-        if self.next_hash_check and datetime.datetime.now() < self.next_hash_check:
-            # If token hash was just checked and it's fine return the link
-            return self.link
-        else:
-            # If token hasn't been checked. Check it.
-            if hash_img(self.link) == self.hash:
-                # If the hash matches set a future check ts and return the link
-                self.next_hash_check = datetime.datetime.now() + datetime.timedelta(days=1)
-                return self.link
-            else:
-                # If the hash doesn't match disable it and return blank
-                self.disabled = True
-                return '/static/blank.jpg'
+        #
+        # if self.next_hash_check and datetime.datetime.now() < self.next_hash_check:
+        #     # If token hash was just checked and it's fine return the link
+        #     return self.link
+        # else:
+        #     # If token hasn't been checked. Check it.
+        #     if hash_img(self.link) == self.hash:
+        #         # If the hash matches set a future check ts and return the link
+        #         self.next_hash_check = datetime.datetime.now() + datetime.timedelta(days=1)
+        #         return self.link
+        #     else:
+        #         # If the hash doesn't match disable it and return blank
+        #         self.disabled = True
+        #         return '/static/blank.jpg'
 
     @property
     def owner(self):
