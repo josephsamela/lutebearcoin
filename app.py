@@ -170,17 +170,11 @@ def login():
 
 @app.route("/signup")
 def signup():
-    invite = request.args.get('invite')
-    if invite == '15fc47b9-336a-4f2e-b312-e539285791e0':
-        return render_template(
-            'signup.html',
-            state='invited'
-        )
-    else:
-        return render_template(
-            'signup.html',
-            state='closed'
-        )
+    return render_template(
+        'signup.html',
+        state='invited'
+    )
+
 
 @app.route("/create-account", methods=["POST"])
 def create_account():
@@ -241,12 +235,13 @@ def create_account():
             state='invited',
             error='Sorry, that username is already taken'
         )
+
     # Check nickname is not already taken
     if nickname in db.all_nicknames():
         return render_template(
             'signup.html',
             state='invited',
-            error='Sorry, that nickname is already taken'
+            error='Sorry, that display name is already taken'
         )
     
     password_hash = bcrypt.generate_password_hash(password).decode('utf-8')

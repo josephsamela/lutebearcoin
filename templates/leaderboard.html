@@ -45,7 +45,7 @@
         </div>
     </section>
 
-    {% for user in users%}
+    {% for user in users if user.balance > 0 %}
     <section>
         <a href="/user/{{user.username}}">
         <div class="credit-card">

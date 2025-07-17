@@ -27,11 +27,16 @@
     <section>
         <div class="card">
             {% if user is none %}
-                <h2>Welcome!</h2>
-                <p>Click here to login!</p>
+                <h2>Welcome</h2>
+                <p>Login to get started!</p>
                 <br>
                 <a href="/login">
                     <button >Login</button>
+                </a>
+                <br>
+                <br>
+                <a href="/signup">
+                    <button >Create Account</button>
                 </a>
             {% else %}
                 <h2>Welcome, {{user.nickname}}!</h2>
