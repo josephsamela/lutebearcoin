@@ -431,7 +431,8 @@ def token_submission():
     ###############
 
     # Check if user has already submitted a token this week
-    if user.submissions_this_week > 0:
+    # System can create unlimited submissions
+    if user.submissions_this_week > 0 and user.username != 'system':
         return render_template("studio_create.html", error="You submitted a token this week. Try later!" , title=title, url=url)
 
     ###############
