@@ -335,7 +335,7 @@ class User(Object):
             if getattr(transaction, 'to') is self.id and transaction.token:
                 tokens[transaction.token] = self.db.tokens[transaction.token].to_dict()
 
-            if getattr(transaction, 'from') is self.id and transaction.token:
+            if getattr(transaction, 'from') is self.id and transaction.token and getattr(transaction, 'from') != self.id:
                 if transaction.token in tokens:
                     tokens.pop(transaction.token)
         
