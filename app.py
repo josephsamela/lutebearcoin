@@ -863,7 +863,7 @@ def authentication_check(request):
 def format_date(d):
     eastern = pytz.timezone('US/Eastern')
     dt = datetime.datetime.fromisoformat(d).replace(tzinfo=datetime.UTC)
-    return dt.astimezone(eastern).strftime("%b %-d, %Y %-I:%M %p")
+    return dt.astimezone(eastern).strftime("%b %d, %Y %I:%M %p")
 
 @app.template_filter()
 def format_day(d):
